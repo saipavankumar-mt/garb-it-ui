@@ -1,0 +1,11 @@
+{
+  "trailingComma": "none",
+  "tabWidth": 2,
+  "semi": false,
+  "singleQuote": true,
+  "arrowParens": "always",
+  "bracketSpacing": true,
+  "vueIndentScriptAndStyle": true,
+  "embeddedLanguageFormatting": "off",
+  "insertSpaceBeforeFunctionParenthesis": true
+}

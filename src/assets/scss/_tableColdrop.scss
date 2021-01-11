@@ -1,0 +1,19 @@
+.data-table-coldrop {
+  &.dropdown {
+    height: 1rem;
+  }
+  .coldrop-body {
+    padding: 0.5rem 0.75rem;
+    hr {
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .coldrop-content {
+      overflow: hidden auto;
+      max-height: min(200px, 100vh - 160px);
+      .column {
+        padding: 0.25rem 0.125rem;
+      }
+    }
+  }
+}
