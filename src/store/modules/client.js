@@ -1,4 +1,4 @@
-import { Api } from '@/api'
+import { Api } from '@/services'
 import { clientTableCols } from '@/utils/table-columns'
 
 /* Client module initial state */
@@ -52,7 +52,7 @@ export const actions = {
   async getClients ({ commit }, request = []) {
     //
     try {
-      const clientRes = await Api().post('Client/search', request)
+      const clientRes = await Api().post('/Client/search', request)
       const clientList = await (clientRes && clientRes.data && clientRes.data.data)
 
       if (clientList) { commit('SET_CLIENTS', clientList) }
@@ -67,7 +67,7 @@ export const actions = {
 
   async getClientByQrId ({ commit }, qrCodeId) {
     try {
-      const clientRes = await Api().get(`Client/${qrCodeId}`)
+      const clientRes = await Api().get(`/Client/${qrCodeId}`)
       const clientObj = await (clientRes && clientRes.data && clientRes.data.data)
 
       if (clientObj) { commit('SET_CLIENT_OBJ', clientObj) }
@@ -80,7 +80,7 @@ export const actions = {
 
   async registerClient ({ commit }, clientRequest) {
     try {
-      const clientRes = await Api().post('Client/register', clientRequest)
+      const clientRes = await Api().post('/Client/register', clientRequest)
       const clientObj = await (clientRes && clientRes.data && clientRes.data.data)
 
       if (clientObj) { commit('SET_CLIENT_OBJ', clientObj) }
@@ -93,7 +93,7 @@ export const actions = {
 
   async updateClient ({ commit }, clientRequest) {
     try {
-      const clientRes = await Api().post('Client/update', clientRequest)
+      const clientRes = await Api().post('/Client/update', clientRequest)
       const clientObj = await (clientRes && clientRes.data && clientRes.data.data)
 
       if (clientObj) { commit('SET_CLIENT_OBJ', clientObj) }

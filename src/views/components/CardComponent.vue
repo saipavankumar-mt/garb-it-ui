@@ -19,6 +19,7 @@
         />
         <span v-if="headerBtnText">{{ headerBtnText }}</span>
       </button>
+      <slot v-if="hasHeaderAction" name="header-action"></slot>
     </header>
     <section v-if="hasActions" class="notification is-card-action">
       <div class="level">
@@ -63,11 +64,15 @@ export default {
     hasActions: {
       type: Boolean,
       default: false
+    },
+    hasHeaderAction: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
     hasHeader () {
-      return !!(this.title || this.headerBtnText || this.headerBtnIcon)
+      return !!(this.title || this.headerBtnText || this.headerBtnIcon || this.hasHeaderAction)
     }
   }
 }

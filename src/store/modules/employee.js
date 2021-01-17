@@ -1,4 +1,4 @@
-import { Api } from '@/api'
+import { Api } from '@/services'
 import { empTableCols } from '@/utils/table-columns'
 
 /* Employee module initial state */
@@ -56,7 +56,7 @@ export const actions = {
   //
   async getEmployees ({ commit, rootGetters }) {
     //
-    const END_POINT = rootGetters['user/isSuperAdmin'] ? 'Employee/all' : 'Employee'
+    const END_POINT = rootGetters['user/isSuperAdmin'] ? '/Employee/all' : '/Employee'
     //
     try {
       const empRes = await Api().get(END_POINT)
@@ -74,7 +74,7 @@ export const actions = {
 
   async getEmployeeById ({ commit }, employeeId) {
     try {
-      const empRes = await Api().get(`Employee/${employeeId}`)
+      const empRes = await Api().get(`/Employee/${employeeId}`)
       const empObj = await (empRes && empRes.data && empRes.data.data)
 
       if (empObj) { commit('SET_EMP_OBJ', empObj) }
@@ -87,7 +87,7 @@ export const actions = {
 
   async addEmployee ({ commit }, empRequest) {
     try {
-      const empRes = await Api().post('Employee/add', empRequest)
+      const empRes = await Api().post('/Employee/add', empRequest)
       const empObj = await (empRes && empRes.data && empRes.data.data)
 
       if (empObj) { commit('SET_EMP_OBJ', empObj) }
@@ -100,7 +100,7 @@ export const actions = {
 
   async updateEmployee ({ commit }, empRequest) {
     try {
-      const empRes = await Api().post('Employee/update', empRequest)
+      const empRes = await Api().post('/Employee/update', empRequest)
       const empObj = await (empRes && empRes.data && empRes.data.data)
 
       if (empObj) { commit('SET_EMP_OBJ', empObj) }
@@ -112,7 +112,7 @@ export const actions = {
 
   async deleteEmployee ({ commit }, employeeId) {
     try {
-      await Api().delete(`Employee/${employeeId}`)
+      await Api().delete(`/Employee/${employeeId}`)
     } catch (error) {
       console.error('Error while getting employee details => ', error)
       throw error

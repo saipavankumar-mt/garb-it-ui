@@ -25,6 +25,12 @@
       :class="{'is-active':isMenuNavBarActive}"
     >
       <div class="navbar-end">
+        <div class="navbar-item">
+          <span class="tag is-light">Location : {{location}}</span>
+        </div>
+        <div class="navbar-item">
+          <span class="tag is-light">Muncipality : {{municipality}}</span>
+        </div>
         <nav-bar-menu class="has-user-avatar">
           <b-icon class="is-user-avatar" icon="account" />
           <div class="is-user-name">
@@ -78,7 +84,9 @@ export default {
       return this.isAsideMobileExpanded ? 'backburger' : 'forwardburger'
     },
     ...mapState('user', {
-      username: state => state.username
+      username: state => state.username,
+      location: state => state.userLocation,
+      municipality: state => state.userMunicipality
     }),
     ...mapState([
       'isNavBarVisible',
@@ -98,10 +106,6 @@ export default {
       this.isMenuNavBarActive = (!this.isMenuNavBarActive)
     },
     logout () {
-      // this.$buefy.snackbar.open({
-      //   message: 'Log out clicked',
-      //   queue: false
-      // })
       this.$router.push({ name: 'logout', params: { isLogout: true } })
     }
   }

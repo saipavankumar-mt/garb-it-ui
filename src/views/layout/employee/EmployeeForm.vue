@@ -114,10 +114,11 @@
                   placeholder="Click to select..."
                   icon="calendar-today"
                   position="is-bottom-left"
-                  :years-range="[-100, 100]"
+                  type="is-only-date"
                   trap-focus
                   name="dateOfBirth"
                   required
+                  :years-range="[-100, 100]"
                 >
                 </datepicker>
               </b-field>
@@ -144,20 +145,10 @@
           />
           <div class="column is-8">
             <b-field label="Location" custom-class="is-small">
-              <b-input
-                v-model="employeeForm.location"
-                placeholder="Enter location..."
-                name="location"
-                required
-              />
+              <b-input v-model="employeeForm.location" :disabled="true" />
             </b-field>
             <b-field label="Municipality" custom-class="is-small">
-              <b-input
-                v-model="employeeForm.municipality"
-                placeholder="Enter municipality..."
-                name="municipality"
-                required
-              />
+              <b-input v-model="employeeForm.municipality" :disabled="true" />
             </b-field>
             <b-field grouped>
               <b-field label="City" custom-class="is-small" expanded>
@@ -282,6 +273,10 @@ export default {
     ...mapGetters(['gender', 'maritalStatus']),
     ...mapState('employee', {
       empObj: state => _.cloneDeep(state.empObj)
+    }),
+    ...mapState('user', {
+      location: state => state.userLocation,
+      municipality: state => state.userMunicipality
     })
   },
   watch: {
@@ -295,6 +290,8 @@ export default {
     } else {
       this.employeeForm = objectTransform({}, this.createEmpKeys)
       this.employeeForm.designation = this.employeeForm.department = this.employeeForm.role = 'Employee'
+      this.employeeForm.location = this.location
+      this.employeeForm.municipality = this.municipality
     }
   },
   methods: {

@@ -1,20 +1,20 @@
 <template>
   <card-component title="Edit Profile" icon="account-circle">
     <form @submit.prevent="submit">
-      <b-field horizontal label="Avatar">
-        <file-picker/>
-      </b-field>
-      <hr>
       <b-field horizontal label="Name" message="Required. Your name">
-        <b-input v-model="form.name" name="name" required/>
+        <b-input v-model="form.name" name="name" required />
       </b-field>
       <b-field horizontal label="E-mail" message="Required. Your e-mail">
-        <b-input v-model="form.email" name="email" type="email" required/>
+        <b-input v-model="form.email" name="email" type="email" required />
       </b-field>
-      <hr>
+      <hr />
       <b-field horizontal>
         <div class="control">
-          <button type="submit" class="button is-primary" :class="{'is-loading':isLoading}">
+          <button
+            type="submit"
+            class="button is-primary"
+            :class="{'is-loading':isLoading}"
+          >
             Submit
           </button>
         </div>
@@ -25,14 +25,12 @@
 
 <script>
 import { mapState } from 'vuex'
-import FilePicker from '@/views/components/FilePicker'
 import CardComponent from '@/views/components/CardComponent'
 
 export default {
   name: 'ProfileUpdateForm',
   components: {
-    CardComponent,
-    FilePicker
+    CardComponent
   },
   data () {
     return {

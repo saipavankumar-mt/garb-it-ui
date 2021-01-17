@@ -15,8 +15,18 @@ import './registerServiceWorker'
 /* Vue Filters */
 import './filters'
 
+/** dayjs */
+import dayjs from 'dayjs'
+import updateLocale from 'dayjs/plugin/updateLocale'
+
 /* Vue. Main component */
 import App from './App.vue'
+
+/** customize dayjs weekday */
+dayjs.extend(updateLocale)
+dayjs.updateLocale('en', {
+  weekStart: 1
+})
 
 /* Default title tag */
 const defaultDocumentTitle = 'GarbIt Admin'

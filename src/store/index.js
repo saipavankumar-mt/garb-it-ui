@@ -9,6 +9,7 @@ import userModule from './modules/user'
 import employeeModule from './modules/employee'
 import clientModule from './modules/client'
 import adminModule from './modules/admin'
+import dashboardModule from './modules/dashboard'
 
 Vue.use(Vuex)
 
@@ -17,7 +18,8 @@ export default new Vuex.Store({
     user: userModule,
     employee: employeeModule,
     client: clientModule,
-    admin: adminModule
+    admin: adminModule,
+    dashboard: dashboardModule
   },
   ...globalStore
 })

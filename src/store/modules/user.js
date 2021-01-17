@@ -1,10 +1,12 @@
-import { Api } from '@/api'
+import { Api } from '@/services'
 
 /* User module initial state */
 export const initialState = () => ({
   username: window.localStorage.getItem('current_username') || null,
   role: window.localStorage.getItem('current_role') || null,
   token: window.localStorage.getItem('session_key') || null,
+  userLocation: window.localStorage.getItem('location') || null,
+  userMunicipality: window.localStorage.getItem('municipality') || null,
   expiration: window.localStorage.getItem('expiration') || null
 })
 
@@ -34,15 +36,23 @@ export const mutations = {
   },
   SET_TOKEN (state, token) {
     state.token = token
+  },
+  SET_USER_LOCATION (state, location) {
+    state.userLocation = location
+  },
+  SET_USER_MUNICIPALITY (sate, municipality) {
+    state.userMunicipality = municipality
   }
+
 }
 
 /* User module actions */
 export const actions = {
   //
   async userLogin ({ dispatch }, userCredential) {
+    window.localStorage.clear()
     try {
-      const userRes = await Api().post('Login', userCredential)
+      const userRes = await Api().post('/Login', userCredential)
       //
       const user = await (userRes && userRes.data && userRes.data.data)
       //
@@ -52,6 +62,15 @@ export const actions = {
         //
       } else {
         dispatch('RETRIEVE_USER', { user, userCredential })
+        if (user.role === 'Admin') {
+          try {
+            const adminRes = await Api().get(`/Admin/${user.id}`)
+            const userLocation = await (adminRes && adminRes.data && adminRes.data.data)
+            dispatch('RETRIEVE_USER', { user, userCredential, userLocation })
+          } catch (error) {
+            console.error('Error while getting user location =>', error)
+          }
+        }
       }
       //
     } catch (error) {
@@ -61,7 +80,7 @@ export const actions = {
     }
   },
 
-  RETRIEVE_USER ({ commit }, { user, userCredential }) {
+  RETRIEVE_USER ({ commit }, { user, userCredential, userLocation }) {
     /* save user details in store */
     commit('SET_TOKEN', user.sessionKey)
     commit('SET_ROLE', user.role || userCredential.role)
@@ -71,6 +90,13 @@ export const actions = {
     window.localStorage.setItem('session_key', user.sessionKey)
     window.localStorage.setItem('current_role', user.role || userCredential.role)
     window.localStorage.setItem('current_username', user.name || userCredential.username)
+
+    if (userLocation) {
+      commit('SET_USER_LOCATION', userLocation.location)
+      commit('SET_USER_MUNICIPALITY', userLocation.municipality)
+      window.localStorage.setItem('location', userLocation.location)
+      window.localStorage.setItem('municipality', userLocation.municipality)
+    }
   },
 
   DESTROY_USER ({ commit }) {

@@ -10,7 +10,7 @@
     <template #trigger>
       <a class="navbar-item" role="button">
         <small v-if="label" class="has-text-grey mr-1">{{label}}</small>
-        <b-icon icon="table-merge-cells" size="default"></b-icon>
+        <b-icon icon="arrow-collapse-horizontal" size="default"></b-icon>
       </a>
     </template>
 

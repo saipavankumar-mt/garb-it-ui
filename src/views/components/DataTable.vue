@@ -1,12 +1,37 @@
 <template>
-  <card-component class="has-table" :has-actions="true">
-    <template #action-right="props">
+  <card-component
+    class="has-table"
+    :title="headerTitle"
+    :icon="headerIcon"
+    :header-btn-text="headerBtnText"
+    :header-btn-icon="headerBtnIcon"
+    :header-btn-class="headerBtnClass"
+    :has-actions="hasActions"
+    @header-btn-click="$emit('header-btn-click')"
+  >
+    <template v-if="hasDateFilter || hasColumnFilter" #action-left="{ type }">
+      <data-table-filters
+        :class="type"
+        :has-date-filter="hasDateFilter"
+        :has-column-filter="hasColumnFilter"
+        :col-filters="colFilters"
+        :toggleFilter="toggleFilter"
+        @filter="onChangeDate($event)"
+      />
+    </template>
+    <template v-if="hasEditColumn || hasDaydrop" #action-right="{ type }">
       <data-table-coldrop
-        :class="props.type"
-        title="Columns to display"
+        v-if="hasEditColumn"
         label="Edit Columns"
+        :class="type"
         :original-columns="columns"
         @filter="($event) => finalColumns = $event"
+      />
+      <data-table-daydrop
+        v-if="hasDaydrop"
+        :class="type"
+        :toggleDrop="toggleDrop"
+        @day-filter="onChangeDaydrop($event)"
       />
     </template>
     <b-table
@@ -29,10 +54,11 @@
           :field="col.field"
           :sortable="col.sortable"
           :visible="col.visible"
+          :centered="col.centered"
           :key="col.field+idx"
         >
           <small v-if="col.date" class="has-text-grey is-abbr-like">
-            {{ props.row[col.field] | toDate }}
+            {{ props.row[col.field] | toDate(!!(col.withTime)) }}
           </small>
           <small v-else class="has-text-grey is-abbr-like">
             {{ props.row[col.field] }}
@@ -82,10 +108,12 @@
 <script>
 import CardComponent from '@/views/components/CardComponent'
 import DataTableColdrop from '@/views/components/DataTableColdrop'
+import DataTableDaydrop from '@/views/components/DataTableDaydrop'
+import DataTableFilters from '@/views/components/DataTableFilters'
 
 export default {
   name: 'DataTable',
-  components: { CardComponent, DataTableColdrop },
+  components: { CardComponent, DataTableColdrop, DataTableDaydrop, DataTableFilters },
   props: {
     data: { type: Array, default: () => [] },
     columns: { type: Array, default: () => [] },
@@ -94,16 +122,31 @@ export default {
     isLoading: { type: Boolean, default: false },
     defaultSortField: { type: String, default: 'name' },
     defaultSortOrder: { type: String, default: 'asc' },
-    showEdit: { type: Boolean, default: false }
+    showEdit: { type: Boolean, default: false },
+    hasDateFilter: { type: Boolean, default: false },
+    hasColumnFilter: { type: Boolean, default: false },
+    colFilters: { type: Array, default: null },
+    hasEditColumn: { type: Boolean, default: false },
+    hasDaydrop: { type: Boolean, default: false },
+    headerTitle: { type: String, default: null },
+    headerIcon: { type: String, default: null },
+    headerBtnText: { type: String, default: null },
+    headerBtnIcon: { type: String, default: null },
+    headerBtnClass: { type: String, default: null }
   },
   data () {
     return {
-      finalColumns: JSON.parse(JSON.stringify(this.columns))
+      finalColumns: JSON.parse(JSON.stringify(this.columns)),
+      toggleFilter: false,
+      toggleDrop: false
     }
   },
   computed: {
     hasVisibleCols () {
       return this.finalColumns.filter(col => col.visible).length > 0
+    },
+    hasActions () {
+      return this.hasDateFilter || this.hasColumnFilter || this.hasEditColumn || this.hasDaydrop
     }
   },
   methods: {
@@ -115,6 +158,14 @@ export default {
             ...(record.qrCodeId ? { query: { code: record.qrCodeId } } : {})
           })
       }
+    },
+    onChangeDate (query) {
+      this.toggleDrop = !this.toggleDrop
+      this.$emit('filter', query)
+    },
+    onChangeDaydrop (query) {
+      this.toggleFilter = !this.toggleFilter
+      this.$emit('day-filter', query)
     }
   }
 }

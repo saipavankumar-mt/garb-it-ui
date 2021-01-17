@@ -18,7 +18,11 @@
       :per-page="5"
       :loading="isLoading"
       :show-edit="true"
+      :hasEditColumn="true"
+      :has-column-filter="true"
+      :col-filters="['clientId', 'phoneNumber']"
       :defaultSortField="`${columns[0].field}`"
+      @filter="searchClients($event)"
     >
     </data-table>
   </section>
@@ -39,10 +43,7 @@ export default {
     }
   },
   created () {
-    this.isLoading = true
-    this.getClients()
-      .then((r) => { this.isLoading = false })
-      .catch((e) => { this.isLoading = false })
+    this.searchClients()
   },
   computed: {
     ...mapState('client', {
@@ -51,7 +52,15 @@ export default {
     ...mapGetters('client', ['columns'])
   },
   methods: {
-    ...mapActions('client', ['getClients'])
+    ...mapActions('client', ['getClients']),
+    //
+    searchClients (event = null) {
+      this.isLoading = true
+      const request = (event && event.request) || []
+      this.getClients(request)
+        .then((r) => { this.isLoading = false })
+        .catch((e) => { this.isLoading = false })
+    }
   }
 }
 </script>

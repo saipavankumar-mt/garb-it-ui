@@ -18,6 +18,7 @@
       :per-page="5"
       :loading="isLoading"
       :show-edit="true"
+      :has-edit-column="true"
       :defaultSortField="`${columns[0].field}`"
     >
     </data-table>

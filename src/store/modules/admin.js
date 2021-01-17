@@ -1,4 +1,4 @@
-import { Api } from '@/api'
+import { Api } from '@/services'
 import { adminTableCols } from '@/utils/table-columns'
 
 export const initialState = () => ({
@@ -59,7 +59,7 @@ export const actions = {
   async getAdmins ({ commit }) {
     //
     try {
-      const adminRes = await Api().get('Admin')
+      const adminRes = await Api().get('/Admin')
       const adminList = await (adminRes && adminRes.data && adminRes.data.data)
 
       if (adminList) { commit('SET_ADMINS', adminList) }
@@ -74,7 +74,7 @@ export const actions = {
 
   async getAdminById ({ commit }, adminId) {
     try {
-      const adminRes = await Api().get(`Admin/${adminId}`)
+      const adminRes = await Api().get(`/Admin/${adminId}`)
       const adminObj = await (adminRes && adminRes.data && adminRes.data.data)
 
       if (adminObj) { commit('SET_ADMIN_OBJ', adminObj) }
@@ -87,7 +87,7 @@ export const actions = {
 
   async addAdmin ({ commit }, adminRequest) {
     try {
-      const adminRes = await Api().post('Admin/add', adminRequest)
+      const adminRes = await Api().post('/Admin/add', adminRequest)
       const adminObj = await (adminRes && adminRes.data && adminRes.data.data)
 
       if (adminObj) { commit('SET_ADMIN_OBJ', adminObj) }
@@ -100,7 +100,7 @@ export const actions = {
 
   async updateAdmin ({ commit }, adminRequest) {
     try {
-      const adminRes = await Api().post('Admin/update', adminRequest)
+      const adminRes = await Api().post('/Admin/update', adminRequest)
       const adminObj = await (adminRes && adminRes.data && adminRes.data.data)
 
       if (adminObj) { commit('SET_EMP_OBJ', adminObj) }
@@ -112,7 +112,7 @@ export const actions = {
 
   async deleteAdmin ({ commit }, adminId) {
     try {
-      await Api().delete(`Admin/${adminId}`)
+      await Api().delete(`/Admin/${adminId}`)
     } catch (error) {
       console.error('Error while getting admin details => ', error)
       throw error

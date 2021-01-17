@@ -93,10 +93,11 @@
                   placeholder="Click to select..."
                   icon="calendar-today"
                   position="is-bottom-left"
-                  :years-range="[-100, 100]"
+                  type="is-only-date"
                   trap-focus
                   name="dateOfBirth"
                   required
+                  :years-range="[-100, 100]"
                 >
                 </datepicker>
               </b-field>
@@ -132,20 +133,10 @@
                 />
               </b-field>
               <b-field label="Location" custom-class="is-small">
-                <b-input
-                  v-model="clientForm.location"
-                  placeholder="Enter location..."
-                  name="location"
-                  required
-                />
+                <b-input v-model="clientForm.location" :disabled="true" />
               </b-field>
               <b-field label="Municipality" custom-class="is-small">
-                <b-input
-                  v-model="clientForm.municipality"
-                  placeholder="Enter municipality..."
-                  name="municipality"
-                  required
-                />
+                <b-input v-model="clientForm.municipality" :disabled="true" />
               </b-field>
               <b-field grouped>
                 <b-field label="City" custom-class="is-small" expanded>
@@ -249,6 +240,10 @@ export default {
     ...mapGetters(['gender', 'maritalStatus']),
     ...mapState('client', {
       clientObj: state => _.cloneDeep(state.clientObj)
+    }),
+    ...mapState('user', {
+      location: state => state.userLocation,
+      municipality: state => state.userMunicipality
     })
   },
   watch: {
@@ -261,6 +256,8 @@ export default {
       this.getClient()
     } else {
       this.clientForm = objectTransform({}, this.createClientKeys)
+      this.clientForm.location = this.location
+      this.clientForm.municipality = this.municipality
     }
   },
   methods: {

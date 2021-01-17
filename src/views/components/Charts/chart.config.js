@@ -36,7 +36,12 @@ export const chartOptionsMain = {
       },
       ticks: {
         padding: 20,
-        fontColor: '#9a9a9a'
+        fontColor: '#9a9a9a',
+        beginAtZero: true
+      },
+      scaleLabel: {
+        display: true,
+        labelString: 'Clients'
       }
     }],
 
@@ -50,6 +55,10 @@ export const chartOptionsMain = {
       ticks: {
         padding: 20,
         fontColor: '#9a9a9a'
+      },
+      scaleLabel: {
+        display: true,
+        labelString: 'Duration'
       }
     }]
   }

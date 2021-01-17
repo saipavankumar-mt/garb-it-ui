@@ -28,8 +28,7 @@ export default {
   methods: {
     logout () {
       this.$store.dispatch('user/DESTROY_USER')
-      this.$router.push({ name: 'login' })
-      this.$router.go()
+      this.$router.go({ name: 'login' })
     }
   }
 }

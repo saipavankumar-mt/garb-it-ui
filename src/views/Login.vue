@@ -27,6 +27,7 @@
                     <b-input
                       size="is-small"
                       type="text"
+                      ref="username"
                       placeholder="Username"
                       name="username"
                       v-model="userInfo.username"
@@ -74,9 +75,9 @@
                       native-type="submit"
                       type="is-primary"
                       expanded
-                      :loading="isLoading"
+                      :disabled="isLoading"
                     >
-                      Login
+                      {{ isLoading ? 'Logging in...' : 'Login' }}
                     </b-button>
                   </b-field>
                 </form>
@@ -110,6 +111,9 @@ export default {
   },
   computed: {
     ...mapGetters('user', ['userRoles'])
+  },
+  mounted () {
+    this.$refs.username.focus()
   },
   methods: {
     async login () {

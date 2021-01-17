@@ -107,10 +107,11 @@
                   placeholder="Click to select..."
                   icon="calendar-today"
                   position="is-bottom-left"
-                  :years-range="[-100, 100]"
+                  type="is-only-date"
                   trap-focus
                   name="dateOfBirth"
                   required
+                  :years-range="[-100, 100]"
                 >
                 </datepicker>
               </b-field>

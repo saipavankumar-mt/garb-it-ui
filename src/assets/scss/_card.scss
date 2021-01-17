@@ -4,6 +4,7 @@
 
 .card {
   &.has-table {
+    // min-height: 500px;
     .card-content {
       padding: 0;
     }
@@ -24,6 +25,15 @@
     a {
       text-decoration: none;
     }
+    .level-left {
+      max-width: 75%;
+      .level-item {
+        width: 100%;
+      }
+    }
+    .level-right {
+      align-self: flex-end;
+    }
   }
 
   .card-content {
@@ -43,6 +53,17 @@
     .icon {
       width: 4rem;
       height: 4rem;
+    }
+  }
+
+  .is-widget-label {
+    text-align: center;
+    width: 100%;
+    .sub-label {
+      margin-top: 0.5rem;
+      .level-item:not(:last-child) {
+        border-right: 1px solid $white-bis;
+      }
     }
   }
 }

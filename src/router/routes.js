@@ -41,7 +41,7 @@ export const routes = [
         },
         path: 'admins',
         name: 'admins',
-        component: () => import(/* webpackChunkName: "admins" */ '@/views/layout/Admins.vue')
+        component: () => import(/* webpackChunkName: "admins" */ '@/views/layout/admin/Admins.vue')
       },
       {
         meta: {
@@ -50,7 +50,7 @@ export const routes = [
         },
         path: 'admins/create',
         name: 'admin-create',
-        component: () => import(/* webpackChunkName: "admins" */ '@/views/layout/AdminForm.vue')
+        component: () => import(/* webpackChunkName: "admins" */ '@/views/layout/admin/AdminForm.vue')
       },
       {
         meta: {
@@ -60,7 +60,7 @@ export const routes = [
         path: 'admins/:adminId/edit',
         name: 'admin-edit',
         props: true,
-        component: () => import(/* webpackChunkName: "admins" */ '@/views/layout/AdminForm.vue')
+        component: () => import(/* webpackChunkName: "admins" */ '@/views/layout/admin/AdminForm.vue')
       },
       /**
        * Employees routes
@@ -72,7 +72,7 @@ export const routes = [
         },
         path: 'employees',
         name: 'employees',
-        component: () => import(/* webpackChunkName: "employees" */ '@/views/layout/Employees.vue')
+        component: () => import(/* webpackChunkName: "employees" */ '@/views/layout/employee/Employees.vue')
       },
       {
         meta: {
@@ -81,7 +81,7 @@ export const routes = [
         },
         path: 'employees/create',
         name: 'employee-create',
-        component: () => import(/* webpackChunkName: "employees" */ '@/views/layout/EmployeeForm.vue')
+        component: () => import(/* webpackChunkName: "employees" */ '@/views/layout/employee/EmployeeForm.vue')
       },
       {
         meta: {
@@ -91,7 +91,7 @@ export const routes = [
         path: 'employees/:employeeId/edit',
         name: 'employee-edit',
         props: true,
-        component: () => import(/* webpackChunkName: "employees" */ '@/views/layout/EmployeeForm.vue')
+        component: () => import(/* webpackChunkName: "employees" */ '@/views/layout/employee/EmployeeForm.vue')
       },
       /**
        * Clients Routes
@@ -103,7 +103,7 @@ export const routes = [
         },
         path: 'clients',
         name: 'clients',
-        component: () => import(/* webpackChunkName: "clients" */ '@/views/layout/Clients.vue')
+        component: () => import(/* webpackChunkName: "clients" */ '@/views/layout/client/Clients.vue')
       },
       {
         meta: {
@@ -112,7 +112,7 @@ export const routes = [
         },
         path: 'clients/create',
         name: 'client-create',
-        component: () => import(/* webpackChunkName: "clients" */ '@/views/layout/ClientForm.vue')
+        component: () => import(/* webpackChunkName: "clients" */ '@/views/layout/client/ClientForm.vue')
       },
       {
         meta: {
@@ -122,7 +122,7 @@ export const routes = [
         path: 'clients/:clientId/edit',
         name: 'client-edit',
         props: true,
-        component: () => import(/* webpackChunkName: "clients" */ '@/views/layout/ClientForm.vue')
+        component: () => import(/* webpackChunkName: "clients" */ '@/views/layout/client/ClientForm.vue')
       },
       /**
        * Rest
