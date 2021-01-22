@@ -9,6 +9,10 @@ export default function (date, withTime) {
   return '-'
 }
 
+export const dayjsDate = (date = null) => dayjs(date || new Date())
+
+export const formatDate = (date, format) => dayjs(date).format(format)
+
 export const dateOnly = (date = null) => {
   return dayjs(date || new Date()).format(DATE_FORMAT)
 }
@@ -47,3 +51,13 @@ export const fromWeekStart = (date = null) => encodeURIComponent(weekStart(date)
 export const fromMonthStart = (date = null) => encodeURIComponent(monthStart(date))
 
 export const lowestDate = () => dayjs(LOWEST_DATE).format(YMDT_FORMAT)
+
+export const pastDays = (date, number) => dayjs(date).subtract(number, 'day').format(YMDT_FORMAT)
+
+export const yesterday = pastDays(dayEnd(), 1)
+
+export const last7thDay = pastDays(yesterday, 7)
+
+export const last30thDay = pastDays(yesterday, 30)
+
+export const dateRange = (fromDate, toCount) => dayjs(fromDate).add(toCount, 'day')

@@ -8,4 +8,8 @@ export const YMDT_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
 
 export const DATE_FORMAT = 'YYYY-MM-DD'
 
+export const DAYMD_FORMAT = 'ddd, MMM D'
+
+export const MD_FORMAT = 'MMM D'
+
 export const LOWEST_DATE = '1000-01-01T00:00:00:000'

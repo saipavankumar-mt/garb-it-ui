@@ -2,14 +2,12 @@
   <data-table
     :data="data"
     :columns="empScanColumns"
-    :per-page="5"
     :loading="isLoading"
     :has-daydrop="true"
     :has-date-filter="true"
     :defaultSortField="`${empScanColumns[0].field}`"
-    @day-filter="getScanCount($event)"
-    @filter="getScanCount($event)"
-    @header-btn-click="exportData()"
+    @click-day-filter="getScanCount($event)"
+    @click-col-filter="getScanCount($event)"
     v-bind="headerItems"
   >
   </data-table>
@@ -19,7 +17,6 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 import DataTable from '@/views/components/DataTable'
-import { dayEnd, lowestDate } from '@/utils/foratters/date'
 
 export default {
   name: 'EmpScanCount',
@@ -29,9 +26,9 @@ export default {
       isLoading: false,
       headerItems: {
         headerTitle: 'Employee scan count',
-        headerIcon: 'account-check',
-        headerBtnText: 'Export',
-        headerBtnClass: 'is-info'
+        headerIcon: 'account-check'
+        // headerBtnText: 'Export',
+        // headerBtnClass: 'is-info'
       }
     }
   },
@@ -48,28 +45,28 @@ export default {
     ...mapActions('dashboard', ['getEmpScanList']),
     //
     getScanCount (params = null) {
-      const query = params || { fromDate: lowestDate(), toDate: dayEnd() }
+      const query = params || {}
       this.isLoading = true
       this.getEmpScanList({ ...query })
         .then((r) => { this.isLoading = false })
         .catch((e) => { this.isLoading = false })
-    },
-    //
-    exportData () {
-      let csvContent = 'data:text/csv;charset=utf-8,'
-      csvContent += [
-        this.empScanColumns.join(','),
-        ...this.data.map(item => Object.values(item).join(','))
-      ]
-        .join('\n')
-        .replace(/(^\[)|(\]$)/gm, '')
-
-      const data = encodeURI(csvContent)
-      const link = document.createElement('a')
-      link.setAttribute('href', data)
-      link.setAttribute('download', 'employee_scan_count.csv')
-      link.click()
     }
+    //
+    // exportData () {
+    //   let csvContent = 'data:text/csv;charset=utf-8,'
+    //   csvContent += [
+    //     this.empScanColumns.join(','),
+    //     ...this.data.map(item => Object.values(item).join(','))
+    //   ]
+    //     .join('\n')
+    //     .replace(/(^\[)|(\]$)/gm, '')
+
+    //   const data = encodeURI(csvContent)
+    //   const link = document.createElement('a')
+    //   link.setAttribute('href', data)
+    //   link.setAttribute('download', 'employee_scan_count.csv')
+    //   link.click()
+    // }
   }
 }
 </script>

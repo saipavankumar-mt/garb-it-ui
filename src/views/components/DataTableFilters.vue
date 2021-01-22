@@ -11,6 +11,7 @@
       trap-focus
       :years-range="[-100, 100]"
       :max-date="toDate ? new Date(toDate) : null"
+      @cleardate="clearFilter()"
     />
     <datepicker
       v-if="hasDateFilter"
@@ -23,6 +24,7 @@
       trap-focus
       :years-range="[-100, 100]"
       :min-date="fromDate ? new Date(fromDate) : null"
+      @cleardate="clearFilter()"
     />
     <template v-for="field in colFilters">
       <b-input
@@ -31,8 +33,8 @@
         v-model="request[field]"
         :placeholder="`Seach by ${field}...`"
         :key="field"
-        @input="requestNotNull = !!(request[field])"
-      ></b-input>
+        @input="requestNotNull = !!(request[field]);clearFilter()"
+      />
     </template>
     <button
       v-if="hasFilters"
@@ -62,7 +64,8 @@ export default {
       fromDate: null,
       toDate: null,
       request: {},
-      requestNotNull: false
+      requestNotNull: false,
+      searchWhenClear: false
     }
   },
   computed: {
@@ -70,9 +73,7 @@ export default {
       return this.hasColumnFilter || this.hasDateFilter
     },
     disableBtn () {
-      const disable = !(this.fromDate || this.toDate || this.requestNotNull)
-      if (disable) { this.search() }
-      return disable
+      return !(this.fromDate || this.toDate || this.requestNotNull)
     }
   },
   watch: {
@@ -84,6 +85,7 @@ export default {
   },
   methods: {
     search () {
+      this.searchWhenClear = !this.searchWhenClear
       const fromDate = this.fromDate
       const toDate = this.toDate
       const request = []
@@ -94,7 +96,13 @@ export default {
         })
       }
 
-      this.$emit('filter', { request, fromDate, toDate })
+      this.$emit('col-filter', { request, fromDate, toDate })
+    },
+    //
+    clearFilter () {
+      if (this.disableBtn && this.searchWhenClear) {
+        this.search()
+      }
     }
   }
 

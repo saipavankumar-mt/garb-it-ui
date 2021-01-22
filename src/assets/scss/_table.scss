@@ -57,6 +57,9 @@ table.table {
   /* This stylizes buefy's pagination */
   .table-wrapper {
     margin-bottom: 0;
+    &.has-sticky-header tr:first-child th {
+      background: $base-grey-medium;
+    }
   }
 
   .table-wrapper + .level {

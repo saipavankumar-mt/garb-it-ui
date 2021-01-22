@@ -63,7 +63,8 @@ $card-header-border-bottom-color: $base-color-light;
 
 /* Table: Bulma override */
 // $table-cell-border: 1px solid $white-bis;
-$table-head-background-color: $base-grey-medium;
+$table-head-background-color: $base-grey-medium !important;
+$table-sticky-header-height: 350px;
 
 /* Table: specifics */
 $table-avatar-size: 1.5rem;

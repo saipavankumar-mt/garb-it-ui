@@ -5,3 +5,10 @@ export const objectTransform = (fromObj, toObjKeys) => {
   }
   return toObj
 }
+
+export const rangeArray = (from, to) => {
+  const arr = []
+  let i = to - from + 1
+  while (i--) arr[i] = to--
+  return arr
+}

@@ -1,5 +1,5 @@
 import { Api } from '@/services'
-import { fromDayStart, toDayEnd, fromWeekStart, fromMonthStart, lowestDate, dayEnd } from '@/utils/foratters/date'
+import { dayEnd, dayStart, yesterday, last7thDay, last30thDay } from '@/utils/foratters/date'
 import { empScanTableCols } from '@/utils/table-columns'
 import { recordTableCols } from '@/utils/table-columns/recordTable'
 
@@ -13,7 +13,12 @@ export const initialState = () => ({
     month: 0
   },
   empScanCountList: [],
-  recordList: [],
+  recordList: {
+    paginationToken: null,
+    recordEntries: [],
+    totalCount: 0
+  },
+  recordExport: [],
   chartList: []
 })
 
@@ -52,6 +57,9 @@ export const mutations = {
   SET_RECORD_LIST (state, list) {
     state.recordList = list
   },
+  SET_RECORD_EXPORT (state, list) {
+    state.recordExport = list
+  },
   SET_CHART_LIST (state, list) {
     state.chartList = list
   }
@@ -89,14 +97,15 @@ export const actions = {
   },
   //
   async getRecordCount ({ commit }) {
-    const dayBegin = fromDayStart()
-    const toDate = toDayEnd()
-    const weekBegin = fromWeekStart()
-    const monthBegin = fromMonthStart()
+    const fromDayStart = encodeURIComponent(dayStart())
+    const toDayEnd = encodeURIComponent(dayEnd())
+    const toYesterday = encodeURIComponent(yesterday)
+    const from7thDay = encodeURIComponent(last7thDay)
+    const from30thDay = encodeURIComponent(last30thDay)
     try {
-      const dayResult = await Api().post(`/RecordEntry/count?fromDate=${dayBegin}&toDate=${toDate}`)
-      const weekResult = await Api().post(`/RecordEntry/count?fromDate=${weekBegin}&toDate=${toDate}`)
-      const monthResult = await Api().post(`/RecordEntry/count?fromDate=${monthBegin}&toDate=${toDate}`)
+      const dayResult = await Api().post(`/RecordEntry/count?fromDate=${fromDayStart}&toDate=${toDayEnd}`)
+      const weekResult = await Api().post(`/RecordEntry/count?fromDate=${from7thDay}&toDate=${toYesterday}`)
+      const monthResult = await Api().post(`/RecordEntry/count?fromDate=${from30thDay}&toDate=${toYesterday}`)
 
       const count = {
         today: await (dayResult && dayResult.data && dayResult.data.data && dayResult.data.data.count) || 0,
@@ -109,11 +118,7 @@ export const actions = {
     } catch (error) {
       //
       console.error('Error while getting employee count =>', error)
-      commit('SET_RECORD_COUNT', {
-        today: 0,
-        week: 0,
-        month: 0
-      })
+      commit('SET_RECORD_COUNT', initialState().recordCount)
     }
   },
   //
@@ -124,7 +129,7 @@ export const actions = {
   },
   //
   async getEmpScanList ({ commit }, { fromDate, toDate }) {
-    fromDate = encodeURIComponent(fromDate || lowestDate())
+    fromDate = encodeURIComponent(fromDate || dayStart())
     toDate = encodeURIComponent(toDate || dayEnd())
     try {
       const scanResult = await Api().get(`/RecordEntry/employeescannedcounts?fromDate=${fromDate}&toDate=${toDate}`)
@@ -136,24 +141,41 @@ export const actions = {
     }
   },
   //
-  async getRecordList ({ commit }, { request, fromDate, toDate }) {
-    fromDate = encodeURIComponent(fromDate || lowestDate())
+  async getRecordList ({ commit }, { request, fromDate, toDate, paginationToken }) {
+    fromDate = encodeURIComponent(fromDate || dayStart())
     toDate = encodeURIComponent(toDate || dayEnd())
+    request = request || []
+    const paginateQuery = paginationToken ? `&paginationToken=${encodeURIComponent(paginationToken)}` : ''
     try {
       const recordResult = await Api().post(
-        `/RecordEntry/search?fromDate=${fromDate}&toDate=${toDate}`,
+        `/RecordEntry/search?fromDate=${fromDate}&toDate=${toDate}${paginateQuery}`,
         request)
-      const recordList = await (recordResult && recordResult.data && recordResult.data.data) || []
+      const recordList = await (recordResult && recordResult.data && recordResult.data.data) || initialState().recordList
       commit('SET_RECORD_LIST', recordList)
     } catch (error) {
       console.error('Error while getting record list =>', error)
-      commit('SET_RECORD_LIST', [])
+      commit('SET_RECORD_LIST', initialState().recordList)
+    }
+  },
+  //
+  async getRecordsToExport ({ commit }, date) {
+    const fromDate = encodeURIComponent(dayStart(date))
+    const toDate = encodeURIComponent(dayEnd(date))
+    try {
+      const recordResult = await Api().post(
+        `/RecordEntry/export?fromDate=${fromDate}&toDate=${toDate}`,
+        [])
+      const recordExport = await (recordResult && recordResult.data && recordResult.data.data) || []
+      commit('SET_RECORD_EXPORT', recordExport)
+    } catch (error) {
+      console.error('Error while getting records to export =>', error)
+      commit('SET_RECORD_EXPORT', [])
     }
   },
   //
   async getChartData ({ commit }, { fromDate, toDate }) {
-    fromDate = encodeURIComponent(fromDate || lowestDate())
-    toDate = encodeURIComponent(toDate || dayEnd())
+    fromDate = encodeURIComponent(fromDate || last7thDay)
+    toDate = encodeURIComponent(toDate || yesterday)
     try {
       const chartResult = await Api().post(`/RecordEntry/daycount?fromDate=${fromDate}&toDate=${toDate}`)
       const chartList = await (chartResult && chartResult.data && chartResult.data.data) || []

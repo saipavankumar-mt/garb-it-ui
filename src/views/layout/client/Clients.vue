@@ -15,14 +15,14 @@
     <data-table
       :data="data"
       :columns="columns"
-      :per-page="5"
+      :per-page="10"
       :loading="isLoading"
       :show-edit="true"
       :hasEditColumn="true"
       :has-column-filter="true"
-      :col-filters="['clientId', 'phoneNumber']"
+      :col-filters="['Id', 'PhoneNumber']"
       :defaultSortField="`${columns[0].field}`"
-      @filter="searchClients($event)"
+      @click-col-filter="searchClients($event)"
     >
     </data-table>
   </section>
@@ -55,8 +55,8 @@ export default {
     ...mapActions('client', ['getClients']),
     //
     searchClients (event = null) {
-      this.isLoading = true
       const request = (event && event.request) || []
+      this.isLoading = true
       this.getClients(request)
         .then((r) => { this.isLoading = false })
         .catch((e) => { this.isLoading = false })

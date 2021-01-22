@@ -23,8 +23,8 @@
         label="Collected"
         :multiple-number="[
         { label: 'today', number: allCounts.record.today },
-        { label: 'this week', number: allCounts.record.week },
-        { label: 'this month', number: allCounts.record.month }
+        { label: 'last 7 days', number: allCounts.record.week },
+        { label: 'last 30 days', number: allCounts.record.month }
       ]"
       />
     </tiles>
@@ -32,11 +32,17 @@
     <tiles :cols="['is-8', 'is-4']">
       <card-component
         class="tile is-child"
+        icon="finance"
         title="Performance"
-        @header-btn-click="fillChartData"
-        header-btn-icon="reload"
-        header-btn-class="is-light"
+        :has-header-action="true"
       >
+        <template #header-action>
+          <data-table-daydrop
+            :is-for-graph="true"
+            @day-filter="fillChartData($event)"
+          />
+        </template>
+
         <div v-if="defaultChart.chartData" class="chart-area">
           <line-chart
             style="height: 100%"
@@ -57,7 +63,12 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
+
 import * as chartConfig from '@/views/components/Charts/chart.config'
+import { dateOnly, dateRange, dayjsDate, formatDate, last7thDay, yesterday } from '@/utils/foratters/date'
+import { MD_FORMAT } from '@/constants'
+import { rangeArray } from '@/utils/helper'
+
 import CardComponent from '@/views/components/CardComponent'
 import Tiles from '@/views/components/Tiles'
 import CardWidget from '@/views/components/CardWidget'
@@ -65,7 +76,7 @@ import LineChart from '@/views/components/Charts/LineChart'
 import TitleBar from '@/views/components/TitleBar'
 import EmpScanCount from '@/views/layout/dashboard/EmpScanCount'
 import Records from '@/views/layout/dashboard/Records'
-import dayjs from 'dayjs'
+import DataTableDaydrop from '@/views/components/DataTableDaydrop'
 
 export default {
   name: 'home',
@@ -76,7 +87,8 @@ export default {
     CardComponent,
     LineChart,
     EmpScanCount,
-    Records
+    Records,
+    DataTableDaydrop
   },
   data () {
     return {
@@ -96,7 +108,7 @@ export default {
     ...mapGetters('dashboard', ['allCounts']),
     //
     dates () {
-      return this.sortedData().map(data => dayjs(data.date).format('dddd'))
+      return this.sortedData().map(data => formatDate(data.date, MD_FORMAT))
     },
     countData () {
       return this.sortedData().map(data => data.count)
@@ -108,29 +120,34 @@ export default {
   },
   methods: {
     ...mapActions('dashboard', ['getAllCount', 'getChartData']),
-    sortedData () {
-      const weekStart = (at) => dayjs().startOf('week').add(at, 'day').format('YYYY/MM/DD')
+    //
+    sortedData (startDate = last7thDay) {
       const sorted = this.chartList.sort((a, b) => {
-        if (dayjs(a.date).isBefore(dayjs(b.date), 'day')) {
+        if (dayjsDate(a.date).isBefore(dayjsDate(b.date), 'day')) {
           return -1
         }
         return 0
       })
-      const sortedDates = sorted.map(s => s.date)
+      const sortedDates = sorted.map(s => dateOnly(s.date))
       const final = []
-      for (const i of [0, 1, 2, 3, 4, 5, 6]) {
-        if (sortedDates.indexOf(weekStart(i)) !== -1) {
-          final.splice(i, 0, sorted[sortedDates.indexOf(weekStart(i))])
+      const diff = dayjsDate(yesterday).diff(dayjsDate(startDate), 'day')
+      for (const i of rangeArray(1, diff)) {
+        if (sortedDates.indexOf(dateOnly(dateRange(startDate, i))) !== -1) {
+          final.splice(i, 0, sorted[sortedDates.indexOf(dateOnly(dateRange(startDate, i)))])
         } else {
-          final.splice(i, 0, { date: weekStart(i), count: 0 })
+          final.splice(i, 0, { date: dateOnly(dateRange(startDate, i)), count: 0 })
         }
       }
       return final
     },
-    async fillChartData () {
-      await this.getChartData({})
+    //
+    async fillChartData (query = {}) {
+      await this.getChartData(query)
+
+      const { fromDate } = query
+      const sortedData = this.sortedData(fromDate)
       this.defaultChart.chartData = {
-        labels: this.dates,
+        labels: sortedData.map(data => formatDate(data.date, MD_FORMAT)),
         datasets: [
           {
             fill: false,
@@ -145,7 +162,7 @@ export default {
             pointHoverRadius: 4,
             pointHoverBorderWidth: 15,
             pointRadius: 4,
-            data: this.countData
+            data: sortedData.map(data => data.count)
           }
         ]
       }

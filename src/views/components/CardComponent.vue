@@ -5,6 +5,7 @@
         <b-icon v-if="icon" :icon="icon" custom-size="default" />
         {{ title }}
       </p>
+      <slot v-if="hasHeaderAction" name="header-action"></slot>
       <button
         v-if="headerBtnIcon || headerBtnText"
         type="button"
@@ -19,7 +20,6 @@
         />
         <span v-if="headerBtnText">{{ headerBtnText }}</span>
       </button>
-      <slot v-if="hasHeaderAction" name="header-action"></slot>
     </header>
     <section v-if="hasActions" class="notification is-card-action">
       <div class="level">

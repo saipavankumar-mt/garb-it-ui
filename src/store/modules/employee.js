@@ -54,12 +54,15 @@ export const mutations = {
 /* Employee module actions */
 export const actions = {
   //
-  async getEmployees ({ commit, rootGetters }) {
+  async getEmployees ({ commit, rootGetters }, request = []) {
     //
-    const END_POINT = rootGetters['user/isSuperAdmin'] ? '/Employee/all' : '/Employee'
+    const isSuperAdmin = rootGetters['user/isSuperAdmin']
+    const END_POINT = isSuperAdmin ? '/Employee/all' : '/Employee/search'
     //
     try {
-      const empRes = await Api().get(END_POINT)
+      const empRes = isSuperAdmin
+        ? await Api().get(END_POINT)
+        : await Api().post(END_POINT, request)
       const empList = await (empRes && empRes.data && empRes.data.data)
 
       if (empList) { commit('SET_EMPLOYEES', empList) }

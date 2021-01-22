@@ -16,7 +16,7 @@
         :has-column-filter="hasColumnFilter"
         :col-filters="colFilters"
         :toggleFilter="toggleFilter"
-        @filter="onChangeDate($event)"
+        @col-filter="onChangeDate($event)"
       />
     </template>
     <template v-if="hasEditColumn || hasDaydrop" #action-right="{ type }">
@@ -30,7 +30,8 @@
       <data-table-daydrop
         v-if="hasDaydrop"
         :class="type"
-        :toggleDrop="toggleDrop"
+        :toggle-drop="toggleDrop"
+        :default-drop="defaultDrop"
         @day-filter="onChangeDaydrop($event)"
       />
     </template>
@@ -42,9 +43,13 @@
       :striped="true"
       :hoverable="true"
       :scrollable="true"
+      :sticky-header="true"
       :pagination-size="'is-small'"
       :checkable="checkable"
       :data="data"
+      :total="totalRecords"
+      :backend-pagination="backendPagination"
+      @page-change="$emit('page-change', $event)"
     >
       <slot></slot>
       <template v-for="(col, idx) in finalColumns">
@@ -118,10 +123,12 @@ export default {
     data: { type: Array, default: () => [] },
     columns: { type: Array, default: () => [] },
     checkable: { type: Boolean, default: false },
-    perPage: { type: Number, default: 10 },
+    perPage: { type: Number, default: 20 },
     isLoading: { type: Boolean, default: false },
     defaultSortField: { type: String, default: 'name' },
     defaultSortOrder: { type: String, default: 'asc' },
+    totalRecords: { type: Number, default: null },
+    backendPagination: { type: Boolean, default: false },
     showEdit: { type: Boolean, default: false },
     hasDateFilter: { type: Boolean, default: false },
     hasColumnFilter: { type: Boolean, default: false },
@@ -138,7 +145,8 @@ export default {
     return {
       finalColumns: JSON.parse(JSON.stringify(this.columns)),
       toggleFilter: false,
-      toggleDrop: false
+      toggleDrop: false,
+      defaultDrop: null
     }
   },
   computed: {
@@ -161,11 +169,12 @@ export default {
     },
     onChangeDate (query) {
       this.toggleDrop = !this.toggleDrop
-      this.$emit('filter', query)
+      this.defaultDrop = (query.fromDate || query.toDate) ? { label: 'Select', code: 'none' } : null
+      this.$emit('click-col-filter', query)
     },
     onChangeDaydrop (query) {
       this.toggleFilter = !this.toggleFilter
-      this.$emit('day-filter', query)
+      this.$emit('click-day-filter', query)
     }
   }
 }

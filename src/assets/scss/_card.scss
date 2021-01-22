@@ -12,9 +12,12 @@
 
   .card-header {
     border-bottom: 1px solid $base-color-light;
-    .button {
+    .button,
+    .dropdown {
       display: inline-flex;
       align-self: center;
+    }
+    .button {
       margin-right: 0.75rem;
     }
   }

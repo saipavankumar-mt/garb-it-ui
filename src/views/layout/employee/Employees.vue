@@ -15,11 +15,14 @@
     <data-table
       :data="data"
       :columns="columns"
-      :per-page="5"
+      :per-page="10"
       :loading="isLoading"
       :show-edit="true"
       :has-edit-column="true"
+      :has-column-filter="true"
+      :col-filters="['Id', 'PhoneNumber']"
       :defaultSortField="`${columns[0].field}`"
+      @click-col-filter="searchEmployees($event)"
     >
     </data-table>
   </section>
@@ -40,10 +43,7 @@ export default {
     }
   },
   created () {
-    this.isLoading = true
-    this.getEmployees()
-      .then((r) => { this.isLoading = false })
-      .catch((e) => { this.isLoading = false })
+    this.searchEmployees()
   },
   computed: {
     ...mapState('employee', {
@@ -52,7 +52,15 @@ export default {
     ...mapGetters('employee', ['columns'])
   },
   methods: {
-    ...mapActions('employee', ['getEmployees'])
+    ...mapActions('employee', ['getEmployees']),
+    //
+    searchEmployees (event = null) {
+      const request = (event && event.request) || []
+      this.isLoading = true
+      this.getEmployees(request)
+        .then((r) => { this.isLoading = false })
+        .catch((e) => { this.isLoading = false })
+    }
   }
 }
 </script>

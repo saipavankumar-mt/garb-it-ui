@@ -40,7 +40,7 @@ export const mutations = {
   SET_USER_LOCATION (state, location) {
     state.userLocation = location
   },
-  SET_USER_MUNICIPALITY (sate, municipality) {
+  SET_USER_MUNICIPALITY (state, municipality) {
     state.userMunicipality = municipality
   }
 

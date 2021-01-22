@@ -29,27 +29,38 @@
 </template>
 
 <script>
-import { dayEnd, dayStart, lowestDate, monthStart, weekStart } from '@/utils/foratters/date'
+import { dayEnd, dayStart, yesterday, last7thDay, last30thDay } from '@/utils/foratters/date'
 
 export default {
   name: 'DataTableDaydrop',
   props: {
-    toggleDrop: { type: Boolean, default: false }
+    toggleDrop: { type: Boolean, default: false },
+    isForGraph: { type: Boolean, default: false },
+    defaultDrop: { type: Object, default: null }
   },
   data () {
     return {
-      currentMenu: { label: 'All', code: 'ALL' },
-      menus: [
+      currentMenu: {}
+    }
+  },
+  created () {
+    this.currentMenu = this.menus[0]
+  },
+  computed: {
+    menus () {
+      const menuItems = [
         { label: 'Today', code: 'day' },
-        { label: 'This week', code: 'week' },
-        { label: 'This month', code: 'month' },
-        { label: 'All', code: 'ALL' }
+        { label: 'Last 7 days', code: 'week' },
+        { label: 'Last 30 days', code: 'month' }
+        // { label: 'All', code: 'ALL' }
       ]
+
+      return this.isForGraph ? menuItems.filter(item => item.code !== 'day') : menuItems
     }
   },
   watch: {
     toggleDrop () {
-      this.currentMenu = { label: 'All', code: 'ALL' }
+      this.currentMenu = this.defaultDrop || this.menus[0]
     }
   },
   methods: {
@@ -62,15 +73,15 @@ export default {
           toDate = dayEnd()
           break
         case 'week':
-          fromDate = weekStart()
-          toDate = dayEnd()
+          fromDate = last7thDay
+          toDate = yesterday
           break
         case 'month':
-          fromDate = monthStart()
-          toDate = dayEnd()
+          fromDate = last30thDay
+          toDate = yesterday
           break
         default:
-          fromDate = lowestDate()
+          fromDate = dayStart()
           toDate = dayEnd()
           break
       }
