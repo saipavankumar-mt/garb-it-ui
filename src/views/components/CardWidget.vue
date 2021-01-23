@@ -21,10 +21,10 @@
               :key="item.label"
             >
               <div>
-                <h4 class="subtitle is-size-7 is-spaced">{{item.label}}</h4>
-                <h3 class="title is-4">
+                <h3 class="title is-4 is-spaced">
                   <growing-number :value="item.number || 0" />
                 </h3>
+                <h4 class="subtitle is-size-7">{{item.label}}</h4>
               </div>
             </div>
           </div>

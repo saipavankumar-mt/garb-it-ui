@@ -65,6 +65,7 @@
 <script>
 import NavBarMenu from '@/views/components/NavBarMenu'
 import { mapState } from 'vuex'
+import { SESSION_EXP_MSG } from '@/constants'
 
 export default {
   name: 'NavBar',
@@ -97,6 +98,7 @@ export default {
     this.$router.afterEach(() => {
       this.isMenuNavBarActive = false
     })
+    this.setSessionTTL()
   },
   methods: {
     menuToggleMobile () {
@@ -107,6 +109,16 @@ export default {
     },
     logout () {
       this.$router.push({ name: 'logout', params: { isLogout: true } })
+    },
+    setSessionTTL () {
+      const expiry = window.localStorage.getItem('expiration')
+      const timeDiff = expiry * 1 - 50 - Math.floor(new Date().getTime())
+      setTimeout(() => {
+        if (expiry * 1 - 10 < Math.floor(new Date().getTime())) {
+          alert(SESSION_EXP_MSG)
+          this.logout()
+        }
+      }, timeDiff)
     }
   }
 }

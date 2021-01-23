@@ -25,7 +25,7 @@
       :can-cancel="!exporting"
       :on-cancel="resetModal"
     >
-      <div class="modal-card">
+      <div class="modal-card export-modal">
         <section class="modal-card-body">
           <b-field
             label="Select Date to export records for"
@@ -37,12 +37,11 @@
               v-model="exportDate"
               placeholder="Click to select..."
               icon="calendar-today"
-              position="is-top-left"
+              position="is-bottom-left"
               size="is-small"
               type="is-only-date"
               name="exportDate"
               :years-range="[-100, 100]"
-              append-to-body
               trap-focus
               required
               @input="exportError = false"
@@ -82,7 +81,7 @@ export default {
       },
       perPage: 20,
       paginatedData: [],
-      paginateToken: null,
+      paginationToken: null,
       loadMore: false,
       apiRequest: null,
       isModalActive: false,
@@ -102,6 +101,10 @@ export default {
     ...mapGetters('dashboard', ['recordColumns']),
     total () {
       if (this.loadMore) {
+        const reminder = this.paginatedData.length % this.perPage
+        if (reminder !== 0) {
+          return this.paginatedData.length + this.perPage - reminder
+        }
         return this.paginatedData.length + this.perPage
       }
       return this.paginatedData.length
@@ -111,18 +114,21 @@ export default {
     ...mapActions('dashboard', ['getRecordList', 'getRecordsToExport']),
     //
     async searchRecords (params = null, isNew = true) {
-      if (isNew) { this.paginatedData = [] }
+      if (isNew) {
+        this.paginatedData = []
+        this.paginationToken = null
+      }
       const query = this.apiRequest = params || {}
       this.isLoading = true
       try {
-        await this.getRecordList({ ...query, paginateToken: this.paginateToken })
+        await this.getRecordList({ ...query, paginationToken: this.paginationToken })
         this.isLoading = false
         this.paginatedData = [...this.paginatedData, ...this.data.recordEntries]
-        const nextToken = JSON.parse(this.data.paginateToken)
-        this.paginateToken = Object.keys(nextToken).length ? JSON.stringify(nextToken) : null
+        const nextToken = JSON.parse(this.data.paginationToken)
+        this.paginationToken = Object.keys(nextToken).length ? JSON.stringify(nextToken) : null
         this.loadMore = false
         //
-        if ((this.paginatedData.length % this.perPage === 0) && this.paginateToken) {
+        if (this.paginationToken) {
           this.loadMore = true
         }
       } catch (error) {
@@ -132,8 +138,10 @@ export default {
     },
     //
     async onPageChange (pageNumber) {
+      const reminder = this.paginatedData.length % this.perPage
+      const subValue = reminder !== 0 ? this.perPage - reminder : this.perPage
       if (this.loadMore && pageNumber === Math.round(this.total / this.perPage) &&
-        ((this.total - this.perPage) === this.paginatedData.length)) {
+        ((this.total - subValue) === this.paginatedData.length)) {
         await this.searchRecords(this.apiRequest, false)
       }
     },

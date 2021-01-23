@@ -80,6 +80,7 @@ export default {
     toggleFilter () {
       this.fromDate = null
       this.toDate = null
+      this.requestNotNull = false
       this.request = {}
     }
   },

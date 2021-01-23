@@ -141,14 +141,15 @@ export const actions = {
     }
   },
   //
-  async getRecordList ({ commit }, { request, fromDate, toDate, paginationToken }) {
+  async getRecordList ({ commit }, { request, fromDate, toDate, limit, paginationToken }) {
     fromDate = encodeURIComponent(fromDate || dayStart())
     toDate = encodeURIComponent(toDate || dayEnd())
     request = request || []
+    limit = limit || 100
     const paginateQuery = paginationToken ? `&paginationToken=${encodeURIComponent(paginationToken)}` : ''
     try {
       const recordResult = await Api().post(
-        `/RecordEntry/search?fromDate=${fromDate}&toDate=${toDate}${paginateQuery}`,
+        `/RecordEntry/search?fromDate=${fromDate}&toDate=${toDate}&limit=100${paginateQuery}`,
         request)
       const recordList = await (recordResult && recordResult.data && recordResult.data.data) || initialState().recordList
       commit('SET_RECORD_LIST', recordList)

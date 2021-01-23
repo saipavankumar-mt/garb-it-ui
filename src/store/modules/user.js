@@ -1,3 +1,4 @@
+import { SESSION_EXP_TIME } from '@/constants'
 import { Api } from '@/services'
 
 /* User module initial state */
@@ -6,8 +7,7 @@ export const initialState = () => ({
   role: window.localStorage.getItem('current_role') || null,
   token: window.localStorage.getItem('session_key') || null,
   userLocation: window.localStorage.getItem('location') || null,
-  userMunicipality: window.localStorage.getItem('municipality') || null,
-  expiration: window.localStorage.getItem('expiration') || null
+  userMunicipality: window.localStorage.getItem('municipality') || null
 })
 
 /* User module state */
@@ -90,6 +90,7 @@ export const actions = {
     window.localStorage.setItem('session_key', user.sessionKey)
     window.localStorage.setItem('current_role', user.role || userCredential.role)
     window.localStorage.setItem('current_username', user.name || userCredential.username)
+    window.localStorage.setItem('expiration', SESSION_EXP_TIME)
 
     if (userLocation) {
       commit('SET_USER_LOCATION', userLocation.location)
@@ -109,6 +110,7 @@ export const actions = {
     window.localStorage.removeItem('session_key')
     window.localStorage.removeItem('current_role')
     window.localStorage.removeItem('current_username')
+    window.localStorage.removeItem('expiration')
     window.localStorage.clear()
   }
 }

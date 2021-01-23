@@ -1,5 +1,14 @@
 .modal-card {
   width: $modal-card-width;
+  &.export-modal {
+    min-height: 350px;
+    .datepicker {
+      .dropdown-menu {
+        transform: scale(0.75) translate(15%, -5%);
+        top: 0;
+      }
+    }
+  }
 }
 
 .modal-card-head {

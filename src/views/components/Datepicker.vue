@@ -28,10 +28,6 @@
         clear
       </button>
     </div>
-    <!-- <button class="button is-primary is-small" @click.prevent="clearDate()">
-      <b-icon icon="close" class="close-icon"></b-icon>
-      <span>Clear</span>
-    </button> -->
   </b-datepicker>
 </template>
 
@@ -40,6 +36,7 @@ import { dateFormatter } from '@/utils/foratters'
 import { dateOnly, dateWithCurrentTime, dayEnd, dayStart } from '@/utils/foratters/date'
 
 export default {
+  inheritAttrs: false,
   name: 'Datepicker',
   props: {
     placeholder: { type: String, default: null },
