@@ -37,7 +37,8 @@ export const chartOptionsMain = {
       ticks: {
         padding: 20,
         fontColor: '#9a9a9a',
-        beginAtZero: true
+        beginAtZero: true,
+        suggestedMax: 100
       },
       scaleLabel: {
         display: true,
