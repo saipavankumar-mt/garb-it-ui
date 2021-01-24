@@ -1,5 +1,6 @@
 import { Api } from '@/services'
 import { clientTableCols } from '@/utils/table-columns'
+import { GENDER, MARITAL_STATUS } from '@/constants'
 
 /* Client module initial state */
 export const initialState = () => ({
@@ -8,9 +9,9 @@ export const initialState = () => ({
     id: null,
     name: null,
     phoneNumber: null,
-    gender: null,
+    gender: GENDER.slice(-1)[0],
     dateOfBirth: null,
-    married: null,
+    married: MARITAL_STATUS.slice(-1)[0],
     address: null,
     location: null,
     municipality: null,
@@ -32,7 +33,12 @@ export const state = initialState
 
 /* Client module getters */
 export const getters = {
-  columns: () => clientTableCols
+  columns: () => clientTableCols,
+  //
+  colFilters: () => [
+    { field: 'Id', label: 'Household Id' },
+    { field: 'PhoneNumber', label: 'Phone number' }
+  ]
 }
 
 /* Client module mutations */
@@ -48,6 +54,9 @@ export const mutations = {
 
 /* Client module actions */
 export const actions = {
+  setClientFormDefaults ({ rootState }, form) {
+    Object.assign(form, initialState().clientObj, rootState.user.userAddress)
+  },
   //
   async getClients ({ commit }, request = []) {
     //

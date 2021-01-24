@@ -13,7 +13,7 @@
         class="tile is-child"
         type="is-primary"
         icon="home-group"
-        label="Clients"
+        label="Households"
         :number="allCounts.client"
       />
       <card-widget
@@ -34,7 +34,10 @@
         class="tile is-child"
         icon="finance"
         title="Performance"
+        headerBtnText="Export"
+        headerBtnClass="is-info"
         :has-header-action="true"
+        @header-btn-click="exportChartData()"
       >
         <template #header-action>
           <data-table-daydrop
@@ -95,7 +98,8 @@ export default {
       defaultChart: {
         chartData: null,
         extraOptions: chartConfig.chartOptionsMain
-      }
+      },
+      sortedChartData: []
     }
   },
   computed: {
@@ -145,7 +149,7 @@ export default {
       await this.getChartData(query)
 
       const { fromDate } = query
-      const sortedData = this.sortedData(fromDate)
+      const sortedData = this.sortedChartData = this.sortedData(fromDate)
       this.defaultChart.chartData = {
         labels: sortedData.map(data => formatDate(data.date, MD_FORMAT)),
         datasets: [
@@ -166,6 +170,24 @@ export default {
           }
         ]
       }
+    },
+    //
+    exportChartData () {
+      let csvContent = 'data:text/csv;charset=utf-8,'
+      csvContent += [
+        ['Date', 'Scanned Houses'].join(','),
+        ...this.sortedChartData.map(item => Object.values(item).join(','))
+      ]
+        .join('\n')
+        .replace(/(^\[)|(\]$)/gm, '')
+
+      const data = encodeURI(csvContent)
+      const link = document.createElement('a')
+      const timeStamp = ((this.sortedChartData.length === 7)
+        ? 'Last_7_Days_' : 'Last_30_Days_') + dateOnly().replace(/-/g, '')
+      link.setAttribute('href', data)
+      link.setAttribute('download', `Garbit_Summary_${timeStamp}.csv`)
+      link.click()
     }
   }
 }

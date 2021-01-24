@@ -1,5 +1,6 @@
 import { Api } from '@/services'
 import { empTableCols } from '@/utils/table-columns'
+import { GENDER, MARITAL_STATUS } from '@/constants'
 
 /* Employee module initial state */
 export const initialState = () => ({
@@ -8,17 +9,17 @@ export const initialState = () => ({
     id: '',
     name: '',
     phoneNumber: '',
-    gender: '',
+    gender: GENDER.slice(-1)[0],
     dateOfBirth: '',
-    married: '',
+    married: MARITAL_STATUS.slice(-1)[0],
     role: 'Employee',
-    designation: 'Employee',
-    department: 'Employee',
+    designation: 'Garbage Collector',
+    department: 'Garbage Collection',
     location: '',
     municipality: '',
     city: '',
     state: '',
-    country: 'India',
+    country: '',
     reportsToId: '',
     reportsToName: '',
     createdDateTime: '',
@@ -37,7 +38,12 @@ export const state = initialState
 
 /* Employee module getters */
 export const getters = {
-  columns: () => empTableCols
+  columns: () => empTableCols,
+  //
+  colFilters: () => [
+    { field: 'Id', label: 'Employee Id' },
+    { field: 'PhoneNumber', label: 'Phone number' }
+  ]
 }
 
 /* Employee module mutations */
@@ -53,6 +59,10 @@ export const mutations = {
 
 /* Employee module actions */
 export const actions = {
+  //
+  setEmpFormDefaults ({ rootState }, form) {
+    Object.assign(form, initialState().empObj, rootState.user.userAddress)
+  },
   //
   async getEmployees ({ commit, rootGetters }, request = []) {
     //

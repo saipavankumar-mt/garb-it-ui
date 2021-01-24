@@ -8,7 +8,7 @@
         slot="button"
       >
         <b-icon size="is-small" icon="account-plus" />
-        <span>Create new</span>
+        <span>Create Admin</span>
       </router-link>
     </title-bar>
 

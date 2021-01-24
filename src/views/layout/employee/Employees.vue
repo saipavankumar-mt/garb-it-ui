@@ -8,7 +8,7 @@
         slot="button"
       >
         <b-icon size="is-small" icon="account-plus" />
-        <span>Create new</span>
+        <span>Create Employee</span>
       </router-link>
     </title-bar>
 
@@ -20,7 +20,7 @@
       :show-edit="true"
       :has-edit-column="true"
       :has-column-filter="true"
-      :col-filters="['Id', 'PhoneNumber']"
+      :col-filters="colFilters"
       :defaultSortField="`${columns[0].field}`"
       @click-col-filter="searchEmployees($event)"
     >
@@ -49,7 +49,7 @@ export default {
     ...mapState('employee', {
       data: state => state.employeeList
     }),
-    ...mapGetters('employee', ['columns'])
+    ...mapGetters('employee', ['columns', 'colFilters'])
   },
   methods: {
     ...mapActions('employee', ['getEmployees']),

@@ -32,6 +32,13 @@ export const getters = {
   //
   recordColumns: () => recordTableCols,
   //
+  recordColFilters: () => [
+    { field: 'ClientId', label: 'Household Id' },
+    { field: 'EmployeeId', label: 'Employee Id' }
+  ],
+  //
+  defaultRecordSort: () => ({ field: 'scannedDateTime', order: 'desc' }),
+  //
   allCounts: (state) => ({
     client: state.clientCount,
     emp: state.empCount,

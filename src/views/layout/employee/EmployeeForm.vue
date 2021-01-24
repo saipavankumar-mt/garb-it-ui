@@ -9,12 +9,8 @@
     />
     <title-bar>
       {{ employeeId ? 'Edit Employee' : 'Create Employee' }}
-      <router-link
-        to="/employees"
-        class="button is-small is-dark"
-        slot="button"
-      >
-        back
+      <router-link to="/employees" class="button is-info" slot="button">
+        <span>go back</span>
       </router-link>
     </title-bar>
     <card-component
@@ -54,10 +50,20 @@
               </b-field>
             </b-field>
             <b-field label="Designation" custom-class="is-small">
-              <b-input v-model="employeeForm.designation" :disabled="true" />
+              <b-input
+                v-model="employeeForm.designation"
+                placeholder="Enter designation..."
+                required
+                name="designation"
+              />
             </b-field>
             <b-field label="Department" custom-class="is-small">
-              <b-input v-model="employeeForm.department" :disabled="true" />
+              <b-input
+                v-model="employeeForm.department"
+                placeholder="Enter department..."
+                required
+                name="department"
+              />
             </b-field>
             <b-field label="Role" custom-class="is-small">
               <b-input v-model="employeeForm.role" :disabled="true" />
@@ -87,8 +93,6 @@
                   v-model="employeeForm.gender"
                   placeholder="Select gender..."
                   expanded
-                  name="gender"
-                  required
                 >
                   <option v-for="(v,k) in gender" :value="v" :key="k">
                     {{v}}
@@ -100,8 +104,6 @@
                   v-model="employeeForm.married"
                   placeholder="Click to elect..."
                   expanded
-                  name="married"
-                  required
                 >
                   <option v-for="(v,k) in maritalStatus" :value="v" :key="k">
                     {{v}}
@@ -116,8 +118,6 @@
                   position="is-bottom-left"
                   type="is-only-date"
                   trap-focus
-                  name="dateOfBirth"
-                  required
                   :years-range="[-100, 100]"
                 >
                 </datepicker>
@@ -152,28 +152,13 @@
             </b-field>
             <b-field grouped>
               <b-field label="City" custom-class="is-small" expanded>
-                <b-input
-                  v-model="employeeForm.city"
-                  placeholder="Enter city..."
-                  name="city"
-                  required
-                />
+                <b-input v-model="employeeForm.city" :disabled="true" />
               </b-field>
               <b-field label="State" custom-class="is-small" expanded>
-                <b-input
-                  v-model="employeeForm.state"
-                  placeholder="Enter state..."
-                  name="state"
-                  required
-                />
+                <b-input v-model="employeeForm.state" :disabled="true" />
               </b-field>
               <b-field label="Country" custom-class="is-small" expanded>
-                <b-input
-                  v-model="employeeForm.country"
-                  placeholder="Enter country..."
-                  name="country"
-                  required
-                />
+                <b-input v-model="employeeForm.country" :disabled="true" />
               </b-field>
             </b-field>
           </div>
@@ -192,37 +177,43 @@
                 placeholder="Enter username..."
                 name="userName"
                 required
+                :disabled="employeeId"
               />
             </b-field>
             <b-field label="Password" custom-class="is-small">
               <b-input
                 v-model="employeeForm.password"
                 placeholder="Enter password..."
-                password-reveal
                 name="password"
                 required
+                :disabled="employeeId"
               />
             </b-field>
           </div>
         </div>
         <hr class="mb-4 mt-4" />
-        <div class="buttons is-centered">
-          <button
-            v-if="employeeId"
-            type="submit"
-            class="button is-primary"
-            :class="{'is-loading':isLoading}"
-          >
-            update employee
-          </button>
-          <button
-            v-else
-            type="submit"
-            class="button is-primary"
-            :class="{'is-loading':isLoading}"
-          >
-            create employee
-          </button>
+        <div class="columns">
+          <div class="column is-offset-4 buttons">
+            <router-link to="/employees" class="button" slot="button">
+              cancel
+            </router-link>
+            <button
+              v-if="employeeId"
+              type="submit"
+              class="button is-primary"
+              :class="{'is-loading':isLoading}"
+            >
+              update employee
+            </button>
+            <button
+              v-else
+              type="submit"
+              class="button is-primary"
+              :class="{'is-loading':isLoading}"
+            >
+              create employee
+            </button>
+          </div>
         </div>
       </form>
     </card-component>
@@ -273,10 +264,6 @@ export default {
     ...mapGetters(['gender', 'maritalStatus']),
     ...mapState('employee', {
       empObj: state => _.cloneDeep(state.empObj)
-    }),
-    ...mapState('user', {
-      location: state => state.userLocation,
-      municipality: state => state.userMunicipality
     })
   },
   watch: {
@@ -289,9 +276,7 @@ export default {
       this.getEmployee()
     } else {
       this.employeeForm = objectTransform({}, this.createEmpKeys)
-      this.employeeForm.designation = this.employeeForm.department = this.employeeForm.role = 'Employee'
-      this.employeeForm.location = this.location
-      this.employeeForm.municipality = this.municipality
+      this.$store.dispatch('employee/setEmpFormDefaults', this.employeeForm)
     }
   },
   methods: {

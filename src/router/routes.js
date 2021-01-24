@@ -1,3 +1,5 @@
+import store from '@/store'
+
 export const routes = [
   /**
    * Login route
@@ -14,7 +16,7 @@ export const routes = [
     path: '/',
     name: 'home',
     component: require('@/views/Layout.vue').default,
-    redirect: '/dashboard',
+    redirect: store.getters['user/isSuperAdmin'] ? '/admins' : '/dashboard',
     /**
      * Layout children routes
     */
@@ -25,7 +27,7 @@ export const routes = [
       {
         meta: {
           title: 'Dashboard',
-          authRoles: ['Admin', 'SuperAdmin']
+          authRoles: ['Admin']
         },
         path: 'dashboard',
         name: 'dashboard',
@@ -68,7 +70,7 @@ export const routes = [
       {
         meta: {
           title: 'Employees',
-          authRoles: ['Admin', 'SuperAdmin']
+          authRoles: ['Admin']
         },
         path: 'employees',
         name: 'employees',
@@ -77,7 +79,7 @@ export const routes = [
       {
         meta: {
           title: 'Create Employee',
-          authRoles: ['Admin', 'SuperAdmin']
+          authRoles: ['Admin']
         },
         path: 'employees/create',
         name: 'employee-create',
@@ -86,7 +88,7 @@ export const routes = [
       {
         meta: {
           title: 'Edit Employee',
-          authRoles: ['Admin', 'SuperAdmin']
+          authRoles: ['Admin']
         },
         path: 'employees/:employeeId/edit',
         name: 'employee-edit',
@@ -98,8 +100,8 @@ export const routes = [
        */
       {
         meta: {
-          title: 'Clients',
-          authRoles: ['Admin', 'SuperAdmin']
+          title: 'Households',
+          authRoles: ['Admin']
         },
         path: 'clients',
         name: 'clients',
@@ -107,8 +109,8 @@ export const routes = [
       },
       {
         meta: {
-          title: 'Create Client',
-          authRoles: ['Admin', 'SuperAdmin']
+          title: 'Create Household',
+          authRoles: ['Admin']
         },
         path: 'clients/create',
         name: 'client-create',
@@ -116,8 +118,8 @@ export const routes = [
       },
       {
         meta: {
-          title: 'Edit Client',
-          authRoles: ['Admin', 'SuperAdmin']
+          title: 'Edit Household',
+          authRoles: ['Admin']
         },
         path: 'clients/:clientId/edit',
         name: 'client-edit',

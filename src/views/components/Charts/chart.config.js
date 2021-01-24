@@ -58,7 +58,7 @@ export const chartOptionsMain = {
       },
       scaleLabel: {
         display: true,
-        labelString: 'Duration'
+        labelString: 'Date'
       }
     }]
   }

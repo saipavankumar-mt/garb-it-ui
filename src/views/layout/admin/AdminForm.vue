@@ -9,8 +9,8 @@
     />
     <title-bar>
       {{ adminId ? 'Edit Admin' : 'Create Admin' }}
-      <router-link to="/admins" class="button is-small is-dark" slot="button">
-        back
+      <router-link to="/admins" class="button is-info" slot="button">
+        <span>go back</span>
       </router-link>
     </title-bar>
     <card-component
@@ -47,10 +47,20 @@
               </b-field>
             </b-field>
             <b-field label="Designation" custom-class="is-small">
-              <b-input v-model="adminForm.designation" :disabled="true" />
+              <b-input
+                v-model="adminForm.designation"
+                placeholder="Enter designation..."
+                required
+                name="designation"
+              />
             </b-field>
             <b-field label="Department" custom-class="is-small">
-              <b-input v-model="adminForm.department" :disabled="true" />
+              <b-input
+                v-model="adminForm.department"
+                placeholder="Enter department..."
+                required
+                name="department"
+              />
             </b-field>
             <b-field label="Role" custom-class="is-small">
               <b-input v-model="adminForm.role" :disabled="true" />
@@ -80,8 +90,6 @@
                   v-model="adminForm.gender"
                   placeholder="Select gender..."
                   expanded
-                  name="gender"
-                  required
                 >
                   <option v-for="(v,k) in gender" :value="v" :key="k">
                     {{v}}
@@ -93,8 +101,6 @@
                   v-model="adminForm.married"
                   placeholder="Click to elect..."
                   expanded
-                  name="married"
-                  required
                 >
                   <option v-for="(v,k) in maritalStatus" :value="v" :key="k">
                     {{v}}
@@ -109,8 +115,6 @@
                   position="is-bottom-left"
                   type="is-only-date"
                   trap-focus
-                  name="dateOfBirth"
-                  required
                   :years-range="[-100, 100]"
                 >
                 </datepicker>
@@ -138,45 +142,20 @@
           />
           <div class="column is-8">
             <b-field label="Location" custom-class="is-small">
-              <b-input
-                v-model="adminForm.location"
-                placeholder="Enter location..."
-                name="location"
-                required
-              />
+              <b-input v-model="adminForm.location" :disabled="true" />
             </b-field>
             <b-field label="Municipality" custom-class="is-small">
-              <b-input
-                v-model="adminForm.municipality"
-                placeholder="Enter municipality..."
-                name="municipality"
-                required
-              />
+              <b-input v-model="adminForm.municipality" :disabled="true" />
             </b-field>
             <b-field grouped>
               <b-field label="City" custom-class="is-small" expanded>
-                <b-input
-                  v-model="adminForm.city"
-                  placeholder="Enter city..."
-                  name="city"
-                  required
-                />
+                <b-input v-model="adminForm.city" :disabled="true" />
               </b-field>
               <b-field label="State" custom-class="is-small" expanded>
-                <b-input
-                  v-model="adminForm.state"
-                  placeholder="Enter state..."
-                  name="state"
-                  required
-                />
+                <b-input v-model="adminForm.state" :disabled="true" />
               </b-field>
               <b-field label="Country" custom-class="is-small" expanded>
-                <b-input
-                  v-model="adminForm.country"
-                  placeholder="Enter country..."
-                  name="country"
-                  required
-                />
+                <b-input v-model="adminForm.country" :disabled="true" />
               </b-field>
             </b-field>
           </div>
@@ -195,37 +174,43 @@
                 placeholder="Enter username..."
                 name="userName"
                 required
+                :disabled="adminId"
               />
             </b-field>
             <b-field label="Password" custom-class="is-small">
               <b-input
                 v-model="adminForm.password"
                 placeholder="Enter password..."
-                password-reveal
                 name="password"
                 required
+                :disabled="adminId"
               />
             </b-field>
           </div>
         </div>
         <hr class="mb-4 mt-4" />
-        <div class="buttons is-centered">
-          <button
-            v-if="adminId"
-            type="submit"
-            class="button is-primary"
-            :class="{'is-loading':isLoading}"
-          >
-            update admin
-          </button>
-          <button
-            v-else
-            type="submit"
-            class="button is-primary"
-            :class="{'is-loading':isLoading}"
-          >
-            create admin
-          </button>
+        <div class="columns">
+          <div class="column is-offset-4 buttons">
+            <router-link to="/admins" class="button" slot="button">
+              cancel
+            </router-link>
+            <button
+              v-if="adminId"
+              type="submit"
+              class="button is-primary"
+              :class="{'is-loading':isLoading}"
+            >
+              update admin
+            </button>
+            <button
+              v-else
+              type="submit"
+              class="button is-primary"
+              :class="{'is-loading':isLoading}"
+            >
+              create admin
+            </button>
+          </div>
         </div>
       </form>
     </card-component>
@@ -276,6 +261,9 @@ export default {
     ...mapGetters(['gender', 'maritalStatus']),
     ...mapState('admin', {
       adminObj: state => _.cloneDeep(state.adminObj)
+    }),
+    ...mapState('user', {
+      userAddress: state => state.userAddress
     })
   },
   watch: {
@@ -288,7 +276,7 @@ export default {
       this.getAdmin()
     } else {
       this.adminForm = objectTransform({}, this.createAdminKeys)
-      this.adminForm.designation = this.adminForm.department = this.adminForm.role = 'Admin'
+      this.$store.dispatch('admin/setAdminFormDefaults', this.adminForm)
     }
   },
   methods: {

@@ -6,8 +6,8 @@ export const initialState = () => ({
   username: window.localStorage.getItem('current_username') || null,
   role: window.localStorage.getItem('current_role') || null,
   token: window.localStorage.getItem('session_key') || null,
-  userLocation: window.localStorage.getItem('location') || null,
-  userMunicipality: window.localStorage.getItem('municipality') || null
+  userAddress: window.localStorage.getItem('user_address')
+    ? JSON.parse(window.localStorage.getItem('user_address')) : {}
 })
 
 /* User module state */
@@ -37,11 +37,8 @@ export const mutations = {
   SET_TOKEN (state, token) {
     state.token = token
   },
-  SET_USER_LOCATION (state, location) {
-    state.userLocation = location
-  },
-  SET_USER_MUNICIPALITY (state, municipality) {
-    state.userMunicipality = municipality
+  SET_USER_ADDRESS (state, address) {
+    state.userAddress = address
   }
 
 }
@@ -49,7 +46,7 @@ export const mutations = {
 /* User module actions */
 export const actions = {
   //
-  async userLogin ({ dispatch }, userCredential) {
+  async userLogin ({ dispatch, rootGetters }, userCredential) {
     window.localStorage.clear()
     try {
       const userRes = await Api().post('/Login', userCredential)
@@ -62,14 +59,14 @@ export const actions = {
         //
       } else {
         dispatch('RETRIEVE_USER', { user, userCredential })
-        if (user.role === 'Admin') {
-          try {
-            const adminRes = await Api().get(`/Admin/${user.id}`)
-            const userLocation = await (adminRes && adminRes.data && adminRes.data.data)
-            dispatch('RETRIEVE_USER', { user, userCredential, userLocation })
-          } catch (error) {
-            console.error('Error while getting user location =>', error)
-          }
+        const isSuperAdmin = rootGetters['user/isSuperAdmin']
+        const END_POINT = isSuperAdmin ? '/SuperAdmin' : `/Admin/${user.id}`
+        try {
+          const profile = await Api().get(END_POINT)
+          const userLocation = await (profile && profile.data && profile.data.data)
+          dispatch('RETRIEVE_USER', { user, userCredential, userLocation })
+        } catch (error) {
+          console.error('Error while getting user location =>', error)
         }
       }
       //
@@ -93,10 +90,15 @@ export const actions = {
     window.localStorage.setItem('expiration', SESSION_EXP_TIME)
 
     if (userLocation) {
-      commit('SET_USER_LOCATION', userLocation.location)
-      commit('SET_USER_MUNICIPALITY', userLocation.municipality)
-      window.localStorage.setItem('location', userLocation.location)
-      window.localStorage.setItem('municipality', userLocation.municipality)
+      const userAddress = {
+        location: userLocation.location,
+        municipality: userLocation.municipality,
+        city: userLocation.city,
+        state: userLocation.state,
+        country: userLocation.country
+      }
+      commit('SET_USER_ADDRESS', userAddress)
+      window.localStorage.setItem('user_address', JSON.stringify(userAddress))
     }
   },
 
@@ -105,6 +107,7 @@ export const actions = {
     commit('SET_TOKEN', null)
     commit('SET_ROLE', null)
     commit('SET_USER_NAME', null)
+    commit('SET_USER_ADDRESS', {})
 
     /* destroy user details in local storage */
     window.localStorage.removeItem('session_key')

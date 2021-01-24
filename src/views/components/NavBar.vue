@@ -26,10 +26,14 @@
     >
       <div class="navbar-end">
         <div class="navbar-item">
-          <span class="tag is-light">Location : {{location}}</span>
+          <span class="tag is-light">
+            Location : {{userAddress.location || 'N/A'}}
+          </span>
         </div>
         <div class="navbar-item">
-          <span class="tag is-light">Muncipality : {{municipality}}</span>
+          <span class="tag is-light">
+            Muncipality : {{userAddress.municipality || 'N/A'}}
+          </span>
         </div>
         <nav-bar-menu class="has-user-avatar">
           <b-icon class="is-user-avatar" icon="account" />
@@ -86,8 +90,7 @@ export default {
     },
     ...mapState('user', {
       username: state => state.username,
-      location: state => state.userLocation,
-      municipality: state => state.userMunicipality
+      userAddress: state => state.userAddress
     }),
     ...mapState([
       'isNavBarVisible',

@@ -2,6 +2,7 @@
   width: $modal-card-width;
   &.export-modal {
     min-height: 350px;
+    width: 30vw;
     .datepicker {
       .dropdown-menu {
         transform: scale(0.75) translate(15%, -5%);

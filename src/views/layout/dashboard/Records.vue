@@ -5,11 +5,13 @@
       :columns="recordColumns"
       :per-page="perPage"
       :loading="isLoading"
-      :has-daydrop="true"
+      :has-daydrop="false"
       :has-date-filter="true"
+      :is-single-date="true"
       :has-column-filter="true"
-      :col-filters="['ClientId', 'EmployeeId']"
-      :defaultSortField="`${recordColumns[0].field}`"
+      :col-filters="recordColFilters"
+      :defaultSortField="defaultRecordSort.field"
+      :defaultSortOrder="defaultRecordSort.order"
       :total-records="total"
       :backend-pagination="true"
       @page-change="onPageChange"
@@ -98,7 +100,9 @@ export default {
       data: state => state.recordList,
       exportRecords: state => state.recordExport
     }),
-    ...mapGetters('dashboard', ['recordColumns']),
+    //
+    ...mapGetters('dashboard', ['recordColumns', 'recordColFilters', 'defaultRecordSort']),
+    //
     total () {
       if (this.loadMore) {
         const reminder = this.paginatedData.length % this.perPage
@@ -159,7 +163,6 @@ export default {
         await this.getRecordsToExport(this.exportDate)
         this.exporting = false
         if (this.exportRecords.length) {
-          this.resetModal()
           let csvContent = 'data:text/csv;charset=utf-8,'
           csvContent += [
             this.recordColumns.map(col => col.label).join(','),
@@ -171,8 +174,9 @@ export default {
           const data = encodeURI(csvContent)
           const link = document.createElement('a')
           link.setAttribute('href', data)
-          link.setAttribute('download', 'records.csv')
+          link.setAttribute('download', `Garbit_Records_${this.exportDate.replace(/-/g, '')}.csv`)
           link.click()
+          this.resetModal()
         } else {
           this.exportError = true
         }

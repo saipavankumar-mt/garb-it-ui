@@ -13,6 +13,7 @@
       <data-table-filters
         :class="type"
         :has-date-filter="hasDateFilter"
+        :is-single-date="isSingleDate"
         :has-column-filter="hasColumnFilter"
         :col-filters="colFilters"
         :toggleFilter="toggleFilter"
@@ -131,6 +132,7 @@ export default {
     backendPagination: { type: Boolean, default: false },
     showEdit: { type: Boolean, default: false },
     hasDateFilter: { type: Boolean, default: false },
+    isSingleDate: { type: Boolean, default: false },
     hasColumnFilter: { type: Boolean, default: false },
     colFilters: { type: Array, default: null },
     hasEditColumn: { type: Boolean, default: false },

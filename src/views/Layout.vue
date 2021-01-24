@@ -31,7 +31,8 @@ export default {
         {
           to: '/dashboard',
           label: 'Dashboard',
-          icon: 'desktop-mac'
+          icon: 'desktop-mac',
+          hide: this.isSuperAdmin
         },
         {
           to: '/admins',
@@ -41,13 +42,15 @@ export default {
         },
         {
           to: '/clients',
-          label: 'Clients',
-          icon: 'home-group'
+          label: 'Households',
+          icon: 'home-group',
+          hide: this.isSuperAdmin
         },
         {
           to: '/employees',
           label: 'Employees',
-          icon: 'clipboard-account'
+          icon: 'clipboard-account',
+          hide: this.isSuperAdmin
         }
       ]
     }

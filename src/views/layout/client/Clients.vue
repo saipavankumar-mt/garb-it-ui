@@ -1,14 +1,14 @@
 <template>
   <section class="section">
     <title-bar>
-      Clients
+      Households
       <router-link
         to="/clients/create"
         class="button is-primary is-small"
         slot="button"
       >
         <b-icon size="is-small" icon="account-plus" />
-        <span>Create new</span>
+        <span>Create Household</span>
       </router-link>
     </title-bar>
 
@@ -20,7 +20,7 @@
       :show-edit="true"
       :hasEditColumn="true"
       :has-column-filter="true"
-      :col-filters="['Id', 'PhoneNumber']"
+      :col-filters="colFilters"
       :defaultSortField="`${columns[0].field}`"
       @click-col-filter="searchClients($event)"
     >
@@ -49,7 +49,7 @@ export default {
     ...mapState('client', {
       data: state => state.clientList
     }),
-    ...mapGetters('client', ['columns'])
+    ...mapGetters('client', ['columns', 'colFilters'])
   },
   methods: {
     ...mapActions('client', ['getClients']),

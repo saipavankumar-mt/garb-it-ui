@@ -1,5 +1,6 @@
 import { Api } from '@/services'
 import { adminTableCols } from '@/utils/table-columns'
+import { GENDER, MARITAL_STATUS } from '@/constants'
 
 export const initialState = () => ({
   adminList: [],
@@ -7,17 +8,17 @@ export const initialState = () => ({
     id: '',
     name: '',
     phoneNumber: '',
-    gender: '',
+    gender: GENDER.slice(-1)[0],
     dateOfBirth: '',
-    married: '',
+    married: MARITAL_STATUS.slice(-1)[0],
     role: 'Admin',
     designation: 'Admin',
-    department: 'Admin',
+    department: 'Garbage collection',
     location: '',
     municipality: '',
     city: '',
     state: '',
-    country: 'India',
+    country: '',
     reportsToId: '',
     reportsToName: '',
     createdDateTime: '',
@@ -55,6 +56,10 @@ export const mutations = {
 
 /* Admin module actions */
 export const actions = {
+  //
+  setAdminFormDefaults ({ rootState }, form) {
+    Object.assign(form, initialState().adminObj, rootState.user.userAddress)
+  },
   //
   async getAdmins ({ commit }) {
     //

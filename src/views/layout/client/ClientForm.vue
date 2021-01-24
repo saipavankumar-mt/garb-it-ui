@@ -10,7 +10,7 @@
       <div class="modal-card">
         <section class="modal-card-body">
           <p class="modal-card-title">
-            Successfully generated QR code for client Id:
+            Successfully generated QR code for Household Id:
             <strong>{{clientObj.id}}</strong>
           </p>
           <hr />
@@ -19,14 +19,14 @@
       </div>
     </b-modal>
     <title-bar>
-      {{ clientId ? 'Edit Client' : 'Create Client' }}
-      <router-link to="/clients" class="button is-small is-dark" slot="button">
-        back
+      {{ clientId ? 'Edit Household' : 'Create Household' }}
+      <router-link to="/clients" class="button is-info" slot="button">
+        <span>go back</span>
       </router-link>
     </title-bar>
-    <tiles :cols="clientId ? ['is-7', 'is-5'] : ['is-12']">
+    <tiles :cols="clientId ? ['is-8', 'is-4'] : ['is-12']">
       <card-component
-        :title="clientId ? 'Edit client details' : 'Fill client details'"
+        :title="clientId ? 'Edit Household details' : 'Fill Household details'"
         icon="ballot"
         class="tile is-child"
       >
@@ -34,13 +34,13 @@
           <div class="columns">
             <b-field
               class="column is-4"
-              label="Personal Information"
+              label="Household Owner Information"
               custom-class="has-text-centered"
             />
             <div class="column is-8">
               <b-field
                 v-if="clientId"
-                label="Client ID"
+                label="Household ID"
                 custom-class="is-small"
                 expanded
               >
@@ -61,8 +61,6 @@
                     v-model="clientForm.gender"
                     placeholder="Select gender..."
                     expanded
-                    name="gender"
-                    required
                   >
                     <option v-for="(v,k) in gender" :value="v" :key="k">
                       {{v}}
@@ -78,8 +76,6 @@
                     v-model="clientForm.married"
                     placeholder="Click to elect..."
                     expanded
-                    name="married"
-                    required
                   >
                     <option v-for="(v,k) in maritalStatus" :value="v" :key="k">
                       {{v}}
@@ -95,8 +91,6 @@
                   position="is-bottom-left"
                   type="is-only-date"
                   trap-focus
-                  name="dateOfBirth"
-                  required
                   :years-range="[-100, 100]"
                 >
                 </datepicker>
@@ -108,8 +102,6 @@
                 <b-input
                   v-model="clientForm.phoneNumber"
                   placeholder="Enter mobile number..."
-                  name="phoneNumber"
-                  required
                 />
               </b-field>
             </div>
@@ -140,56 +132,46 @@
               </b-field>
               <b-field grouped>
                 <b-field label="City" custom-class="is-small" expanded>
-                  <b-input
-                    v-model="clientForm.city"
-                    placeholder="Enter city..."
-                    name="city"
-                    required
-                  />
+                  <b-input v-model="clientForm.city" :disabled="true" />
                 </b-field>
                 <b-field label="State" custom-class="is-small" expanded>
-                  <b-input
-                    v-model="clientForm.state"
-                    placeholder="Enter state..."
-                    name="state"
-                    required
-                  />
+                  <b-input v-model="clientForm.state" :disabled="true" />
                 </b-field>
                 <b-field label="Country" custom-class="is-small" expanded>
-                  <b-input
-                    v-model="clientForm.country"
-                    placeholder="Enter country..."
-                    name="country"
-                    required
-                  />
+                  <b-input v-model="clientForm.country" :disabled="true" />
                 </b-field>
               </b-field>
             </div>
           </div>
           <hr class="mb-4 mt-4" />
-          <div class="buttons is-centered">
-            <button
-              v-if="clientId"
-              type="submit"
-              class="button is-primary"
-              :class="{'is-loading':isLoading}"
-            >
-              update client
-            </button>
-            <button
-              v-else
-              type="submit"
-              class="button is-primary"
-              :class="{'is-loading':isLoading}"
-            >
-              create client
-            </button>
+          <div class="columns">
+            <div class="column is-offset-4 buttons">
+              <router-link to="/clients" class="button" slot="button">
+                cancel
+              </router-link>
+              <button
+                v-if="clientId"
+                type="submit"
+                class="button is-primary"
+                :class="{'is-loading':isLoading}"
+              >
+                update household
+              </button>
+              <button
+                v-else
+                type="submit"
+                class="button is-primary"
+                :class="{'is-loading':isLoading}"
+              >
+                create household
+              </button>
+            </div>
           </div>
         </form>
       </card-component>
       <card-component
         v-if="clientId"
-        title="QR code of the client"
+        title="QR code of the Household"
         class="tile is-child"
         :style="{height: 'max-content'}"
       >
@@ -240,10 +222,6 @@ export default {
     ...mapGetters(['gender', 'maritalStatus']),
     ...mapState('client', {
       clientObj: state => _.cloneDeep(state.clientObj)
-    }),
-    ...mapState('user', {
-      location: state => state.userLocation,
-      municipality: state => state.userMunicipality
     })
   },
   watch: {
@@ -256,8 +234,7 @@ export default {
       this.getClient()
     } else {
       this.clientForm = objectTransform({}, this.createClientKeys)
-      this.clientForm.location = this.location
-      this.clientForm.municipality = this.municipality
+      this.$store.dispatch('client/setClientFormDefaults', this.clientForm)
     }
   },
   methods: {

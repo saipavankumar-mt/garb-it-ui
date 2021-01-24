@@ -66,9 +66,9 @@
                       </b-radio>
                     </div>
                   </b-field>
-                  <router-link to="/" :class="{'is-size-7': !errorObj.hasError}"
+                  <!-- <router-link to="/" :class="{'is-size-7': !errorObj.hasError}"
                     >Forgot password ?</router-link
-                  >
+                  > -->
                   <hr class="mt-3 mb-3" />
                   <b-field class="has-text-centered">
                     <b-button
@@ -114,6 +114,7 @@ export default {
   },
   mounted () {
     this.$refs.username.focus()
+    this.userInfo.role = this.userRoles[1]
   },
   methods: {
     async login () {
@@ -124,7 +125,7 @@ export default {
       if (result && result.errors) {
         this.isLoading = false
         this.errorObj.hasError = true
-        this.errorObj.errors.push(...result.errors)
+        this.errorObj.errors = result.errors
       } else {
         this.isLoading = false
         this.$router.push('/')
