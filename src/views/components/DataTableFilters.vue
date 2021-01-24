@@ -10,7 +10,7 @@
       type="is-from-date"
       trap-focus
       :years-range="[-100, 100]"
-      :max-date="new Date(toDate)"
+      :max-date="new Date()"
       @cleardate="clearFilter()"
     />
     <datepicker
