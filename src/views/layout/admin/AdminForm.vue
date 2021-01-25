@@ -142,20 +142,45 @@
           />
           <div class="column is-8">
             <b-field label="Location" custom-class="is-small">
-              <b-input v-model="adminForm.location" :disabled="true" />
+              <b-input
+                v-model="adminForm.location"
+                placeholder="Enter location..."
+                name="location"
+                required
+              />
             </b-field>
             <b-field label="Municipality" custom-class="is-small">
-              <b-input v-model="adminForm.municipality" :disabled="true" />
+              <b-input
+                v-model="adminForm.municipality"
+                placeholder="Enter municipality..."
+                name="municipality"
+                required
+              />
             </b-field>
             <b-field grouped>
               <b-field label="City" custom-class="is-small" expanded>
-                <b-input v-model="adminForm.city" :disabled="true" />
+                <b-input
+                  v-model="adminForm.city"
+                  placeholder="Enter city..."
+                  name="city"
+                  required
+                />
               </b-field>
               <b-field label="State" custom-class="is-small" expanded>
-                <b-input v-model="adminForm.state" :disabled="true" />
+                <b-input
+                  v-model="adminForm.state"
+                  placeholder="Enter state..."
+                  name="state"
+                  required
+                />
               </b-field>
               <b-field label="Country" custom-class="is-small" expanded>
-                <b-input v-model="adminForm.country" :disabled="true" />
+                <b-input
+                  v-model="adminForm.country"
+                  placeholder="Enter country..."
+                  name="country"
+                  required
+                />
               </b-field>
             </b-field>
           </div>
