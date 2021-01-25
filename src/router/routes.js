@@ -1,5 +1,3 @@
-import store from '@/store'
-
 export const routes = [
   /**
    * Login route
@@ -16,7 +14,6 @@ export const routes = [
     path: '/',
     name: 'home',
     component: require('@/views/Layout.vue').default,
-    redirect: store.getters['user/isSuperAdmin'] ? '/admins' : '/dashboard',
     /**
      * Layout children routes
     */

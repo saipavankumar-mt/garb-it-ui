@@ -22,9 +22,11 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const isLoggedIn = store.getters['user/isLoggedIn']
-  const isUnauthorizedSuper = to.path === '/unauthorized' && !to.params.isLogout && store.getters['user/isSuperAdmin']
+  const isSuperAdmin = store.getters['user/isSuperAdmin']
+  const isUnauthorizedSuper = to.path === '/unauthorized' && !to.params.isLogout && isSuperAdmin
   const currentRole = store.state.user.role
   if (isLoggedIn) {
+    if (to.name === 'home') { return isSuperAdmin ? next('/admins') : next('/dashboard') }
     if ((to.name === 'login') || (isUnauthorizedSuper)) { next('/') }
     if (to.meta && to.meta.authRoles && !to.meta.authRoles.includes(currentRole)) { next('/unauthorized') }
     next()

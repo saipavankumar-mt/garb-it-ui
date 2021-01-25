@@ -110,7 +110,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['userRoles'])
+    ...mapGetters('user', ['userRoles', 'isSuperAdmin'])
   },
   mounted () {
     this.$refs.username.focus()
@@ -128,7 +128,11 @@ export default {
         this.errorObj.errors = result.errors
       } else {
         this.isLoading = false
-        this.$router.push('/')
+        if (this.isSuperAdmin) {
+          this.$router.push('/admins')
+        } else {
+          this.$router.push('/dashboard')
+        }
       }
     }
   }
