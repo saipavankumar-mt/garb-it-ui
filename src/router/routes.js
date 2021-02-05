@@ -149,6 +149,14 @@ export const routes = [
    * Everything else
    */
   {
+    path: '/privacy-policy',
+    name: 'privacy-policy',
+    component: () => import(/* webpackChunkName: "404" */ '@/views/PrivacyPolicy.vue')
+  },
+  /**
+   * Everything else
+   */
+  {
     path: '*',
     name: '404',
     component: () => import(/* webpackChunkName: "404" */ '@/views/404.vue')

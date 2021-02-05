@@ -9,6 +9,7 @@ import { routes } from './routes'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
+  mode: 'history',
   base: process.env.BASE_URL,
   routes,
   scrollBehavior (to, from, savedPosition) {
@@ -30,7 +31,7 @@ router.beforeEach((to, from, next) => {
     if ((to.name === 'login') || (isUnauthorizedSuper)) { next('/') }
     if (to.meta && to.meta.authRoles && !to.meta.authRoles.includes(currentRole)) { next('/unauthorized') }
     next()
-  } else if (to.name !== 'login') {
+  } else if (!['login', 'privacy-policy'].includes(to.name)) {
     next('/login')
   } else {
     next()

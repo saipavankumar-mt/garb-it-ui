@@ -3,6 +3,11 @@
     <div class="container-fluid">
       <div class="level">
         <div class="level-left">
+          <div class="level-item">
+            <router-link class="pl-3" to="/privacy-policy">
+              Privacy Policy
+            </router-link>
+          </div>
         </div>
         <div class="level-right">
           <div class="level-item">
