@@ -40,10 +40,12 @@ export default {
     }
   },
   created () {
-    this.isLoading = true
-    this.getAdmins()
-      .then((r) => { this.isLoading = false })
-      .catch((e) => { this.isLoading = false })
+    if (this.data.length === 0) {
+      this.isLoading = true
+      this.getAdmins()
+        .then((r) => { this.isLoading = false })
+        .catch((e) => { this.isLoading = false })
+    }
   },
   computed: {
     ...mapState('admin', {

@@ -43,7 +43,9 @@ export default {
     }
   },
   created () {
-    this.searchEmployees()
+    if (this.data.length === 0) {
+      this.searchEmployees()
+    }
   },
   computed: {
     ...mapState('employee', {

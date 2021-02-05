@@ -23,8 +23,8 @@
         label="Collected"
         :multiple-number="[
         { label: 'today', number: allCounts.record.today },
-        { label: 'last 7 days', number: allCounts.record.week },
-        { label: 'last 30 days', number: allCounts.record.month }
+        { label: 'last 7 days', number: Math.round(allCounts.record.week / 7) },
+        { label: 'last 30 days', number: Math.round(allCounts.record.month / 30) }
       ]"
       />
     </tiles>
@@ -146,7 +146,10 @@ export default {
     },
     //
     async fillChartData (query = {}) {
-      await this.getChartData(query)
+      //
+      if (this.chartList.length === 0) {
+        await this.getChartData(query)
+      }
 
       const { fromDate } = query
       const sortedData = this.sortedChartData = this.sortedData(fromDate)

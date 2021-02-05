@@ -103,7 +103,7 @@ export const actions = {
     }
   },
   //
-  async getRecordCount ({ commit }) {
+  async getRecordCount ({ state, commit }) {
     const fromDayStart = encodeURIComponent(dayStart())
     const toDayEnd = encodeURIComponent(dayEnd())
     const toYesterday = encodeURIComponent(yesterday)
@@ -111,13 +111,19 @@ export const actions = {
     const from30thDay = encodeURIComponent(last30thDay)
     try {
       const dayResult = await Api().post(`/RecordEntry/count?fromDate=${fromDayStart}&toDate=${toDayEnd}`)
-      const weekResult = await Api().post(`/RecordEntry/count?fromDate=${from7thDay}&toDate=${toYesterday}`)
-      const monthResult = await Api().post(`/RecordEntry/count?fromDate=${from30thDay}&toDate=${toYesterday}`)
+      //
+      const weekResult = state.recordCount.week === 0
+        ? await Api().post(`/RecordEntry/count?fromDate=${from7thDay}&toDate=${toYesterday}`)
+        : state.recordCount.week
+      //
+      const monthResult = state.recordCount.month === 0
+        ? await Api().post(`/RecordEntry/count?fromDate=${from30thDay}&toDate=${toYesterday}`)
+        : state.recordCount.month
 
       const count = {
-        today: await (dayResult && dayResult.data && dayResult.data.data && dayResult.data.data.count) || 0,
-        week: await (weekResult && weekResult.data && weekResult.data.data && weekResult.data.data.count) || 0,
-        month: await (monthResult && monthResult.data && monthResult.data.data && monthResult.data.data.count) || 0
+        today: (dayResult && dayResult.data && dayResult.data.data && dayResult.data.data.count) || 0,
+        week: (weekResult && weekResult.data && weekResult.data.data && weekResult.data.data.count) || state.recordCount.week,
+        month: (monthResult && monthResult.data && monthResult.data.data && monthResult.data.data.count) || state.recordCount.month
       }
       commit('SET_RECORD_COUNT', count)
       return count
@@ -129,9 +135,9 @@ export const actions = {
     }
   },
   //
-  getAllCount ({ dispatch }) {
-    dispatch('getClientCount')
-    dispatch('getEmployeeCount')
+  getAllCount ({ state, dispatch }) {
+    if (state.clientCount === 0) { dispatch('getClientCount') }
+    if (state.empCount === 0) { dispatch('getEmployeeCount') }
     dispatch('getRecordCount')
   },
   //
