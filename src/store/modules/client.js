@@ -4,7 +4,12 @@ import { GENDER, MARITAL_STATUS } from '@/constants'
 
 /* Client module initial state */
 export const initialState = () => ({
-  clientList: [],
+  clientList: {
+    paginationToken: null,
+    clientInfos: [],
+    totalCount: 0
+  },
+  cachedClients: [],
   clientObj: {
     id: null,
     name: null,
@@ -47,6 +52,9 @@ export const mutations = {
   SET_CLIENTS (state, clients) {
     state.clientList = clients
   },
+  SET_CACHED_CLIENTS (state, cached) {
+    state.cachedClients = cached
+  },
   SET_CLIENT_OBJ (state, client) {
     state.clientObj = client
   }
@@ -58,18 +66,22 @@ export const actions = {
     Object.assign(form, initialState().clientObj, rootState.user.userAddress)
   },
   //
-  async getClients ({ commit }, request = []) {
+  async getClients ({ commit }, { request, limit, paginationToken }) {
+    //
+    request = request || []
+    limit = limit || 500
+    const paginateQuery = paginationToken ? `&paginationToken=${encodeURIComponent(paginationToken)}` : ''
     //
     try {
-      const clientRes = await Api().post('/Client/search', request)
-      const clientList = await (clientRes && clientRes.data && clientRes.data.data)
+      const clientRes = await Api().post(`/Client/search?limit=${limit}${paginateQuery}`, request)
+      const clientList = await (clientRes && clientRes.data && clientRes.data.data) || initialState().clientList
 
       if (clientList) { commit('SET_CLIENTS', clientList) }
       //
     } catch (error) {
       //
       console.error('Error while getting clients => ', error)
-      commit('SET_CLIENTS', [])
+      commit('SET_CLIENTS', initialState().clientList)
       throw error
     }
   },
