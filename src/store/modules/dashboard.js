@@ -107,8 +107,8 @@ export const actions = {
     const fromDayStart = encodeURIComponent(dayStart())
     const toDayEnd = encodeURIComponent(dayEnd())
     const toYesterday = encodeURIComponent(yesterday)
-    const from7thDay = encodeURIComponent(last7thDay)
-    const from30thDay = encodeURIComponent(last30thDay)
+    const from7thDay = encodeURIComponent(dayStart(last7thDay))
+    const from30thDay = encodeURIComponent(dayStart(last30thDay))
     try {
       const dayResult = await Api().post(`/RecordEntry/count?fromDate=${fromDayStart}&toDate=${toDayEnd}`)
       //
@@ -142,7 +142,7 @@ export const actions = {
   },
   //
   async getEmpScanList ({ commit }, { fromDate, toDate }) {
-    fromDate = encodeURIComponent(fromDate || dayStart())
+    fromDate = encodeURIComponent(fromDate ? dayStart(fromDate) : dayStart())
     toDate = encodeURIComponent(toDate || dayEnd())
     try {
       const scanResult = await Api().get(`/RecordEntry/employeescannedcounts?fromDate=${fromDate}&toDate=${toDate}`)
@@ -155,7 +155,7 @@ export const actions = {
   },
   //
   async getRecordList ({ commit }, { request, fromDate, toDate, limit, paginationToken }) {
-    fromDate = encodeURIComponent(fromDate || dayStart())
+    fromDate = encodeURIComponent(fromDate ? dayStart(fromDate) : dayStart())
     toDate = encodeURIComponent(toDate || dayEnd())
     request = request || []
     limit = limit || 100
@@ -188,7 +188,7 @@ export const actions = {
   },
   //
   async getChartData ({ commit }, { fromDate, toDate }) {
-    fromDate = encodeURIComponent(fromDate || last7thDay)
+    fromDate = encodeURIComponent(fromDate ? dayStart(fromDate) : dayStart(last7thDay))
     toDate = encodeURIComponent(toDate || yesterday)
     try {
       const chartResult = await Api().post(`/RecordEntry/daycount?fromDate=${fromDate}&toDate=${toDate}`)

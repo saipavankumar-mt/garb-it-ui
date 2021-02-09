@@ -120,7 +120,9 @@ export default {
   },
   mounted () {
     this.getAllCount()
-    this.fillChartData()
+    if (this.chartList.length === 0) {
+      this.fillChartData()
+    }
   },
   methods: {
     ...mapActions('dashboard', ['getAllCount', 'getChartData']),
@@ -147,9 +149,7 @@ export default {
     //
     async fillChartData (query = {}) {
       //
-      if (this.chartList.length === 0) {
-        await this.getChartData(query)
-      }
+      await this.getChartData(query)
 
       const { fromDate } = query
       const sortedData = this.sortedChartData = this.sortedData(fromDate)

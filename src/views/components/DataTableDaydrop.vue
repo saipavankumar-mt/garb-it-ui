@@ -73,11 +73,11 @@ export default {
           toDate = dayEnd()
           break
         case 'week':
-          fromDate = last7thDay
+          fromDate = dayStart(last7thDay)
           toDate = yesterday
           break
         case 'month':
-          fromDate = last30thDay
+          fromDate = dayStart(last30thDay)
           toDate = yesterday
           break
         default:
