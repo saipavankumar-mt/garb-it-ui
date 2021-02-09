@@ -42,7 +42,7 @@ export const getters = {
   //
   colFilters: () => [
     { field: 'Id', label: 'Household Id' },
-    { field: 'PhoneNumber', label: 'Phone number' }
+    { field: 'Name', label: 'Name' }
   ]
 }
 

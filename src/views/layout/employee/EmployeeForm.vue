@@ -20,6 +20,7 @@
       header-btn-class="is-danger is-light"
       @header-btn-click="modalActive = !modalActive"
     >
+      <b-loading :is-full-page="false" v-model="isLoading" :can-cancel="true" />
       <form @submit.prevent="submit">
         <div class="columns">
           <b-field
@@ -302,6 +303,7 @@ export default {
           queue: false,
           duration: 5000
         })
+        await this.$store.dispatch('dashboard/getEmployeeCount')
         this.goBack()
       } catch (error) {
         this.isLoading = false
@@ -349,7 +351,19 @@ export default {
     },
     //
     async getEmployee () {
+      this.isLoading = true
       await this.$store.dispatch('employee/getEmployeeById', this.employeeId)
+      this.isLoading = false
+      if (!this.employeeForm.id) {
+        this.$buefy.snackbar.open({
+          message: 'Could not fetch employee details',
+          position: 'is-bottom',
+          type: 'is-danger',
+          queue: false,
+          duration: 5000
+        })
+        this.goBack()
+      }
     },
     //
     goBack () {

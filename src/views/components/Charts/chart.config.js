@@ -42,7 +42,7 @@ export const chartOptionsMain = {
       },
       scaleLabel: {
         display: true,
-        labelString: 'Clients'
+        labelString: 'Households'
       }
     }],
 

@@ -24,6 +24,7 @@
         <span>go back</span>
       </router-link>
     </title-bar>
+    <b-loading :is-full-page="false" v-model="isLoading" :can-cancel="false" />
     <tiles :cols="clientId ? ['is-8', 'is-4'] : ['is-12']">
       <card-component
         :title="clientId ? 'Edit Household details' : 'Fill Household details'"
@@ -175,7 +176,12 @@
         class="tile is-child"
         :style="{height: 'max-content'}"
       >
-        <qr-generator :value="clientForm.qrCodeId" level="H" :size="200" />
+        <qr-generator
+          v-if="clientForm.qrCodeId"
+          :value="clientForm.qrCodeId"
+          level="H"
+          :size="200"
+        />
       </card-component>
     </tiles>
   </section>
@@ -254,6 +260,7 @@ export default {
         )
         this.isLoading = false
         this.modalActive = true
+        await this.$store.dispatch('dashboard/getClientCount')
       } catch (error) {
         this.isLoading = false
         this.modalActive = true
@@ -269,7 +276,7 @@ export default {
         await this.getClient()
         this.isLoading = false
         this.$buefy.snackbar.open({
-          message: 'Client updated successfully with client Id: ' + this.clientForm.id,
+          message: 'Household updated successfully with household Id: ' + this.clientForm.id,
           position: 'is-bottom',
           type: 'is-success',
           queue: false,
@@ -281,7 +288,19 @@ export default {
     },
     //
     async getClient () {
+      this.isLoading = true
       await this.$store.dispatch('client/getClientByQrId', this.$route.query.code)
+      this.isLoading = false
+      if (!this.clientForm.qrCodeId) {
+        this.$buefy.snackbar.open({
+          message: 'Could not fetch household details',
+          position: 'is-bottom',
+          type: 'is-danger',
+          queue: false,
+          duration: 5000
+        })
+        this.goBack()
+      }
     },
     //
     goBack () {
