@@ -53,8 +53,10 @@ export default {
   created () {
     if (this.cachedData.length === 0) {
       this.searchClients()
+    } else {
+      this.paginatedData = this.cachedData
+      this.setNextToken()
     }
-    this.paginatedData = this.cachedData
   },
   computed: {
     ...mapState('client', {
@@ -92,16 +94,21 @@ export default {
         this.paginatedData = [...this.paginatedData, ...this.data.clientInfos]
         this.$store.commit('client/SET_CACHED_CLIENTS', this.paginatedData)
         //
-        const nextToken = JSON.parse(this.data.paginationToken)
-        this.paginationToken = Object.keys(nextToken).length ? JSON.stringify(nextToken) : null
-        this.loadMore = false
+        this.setNextToken()
         //
-        if (this.paginationToken) {
-          this.loadMore = true
-        }
       } catch (error) {
         this.isLoading = false
         this.loadMore = false
+      }
+    },
+    //
+    setNextToken () {
+      const nextToken = JSON.parse(this.data.paginationToken)
+      this.paginationToken = Object.keys(nextToken).length ? JSON.stringify(nextToken) : null
+      this.loadMore = false
+      //
+      if (this.paginationToken) {
+        this.loadMore = true
       }
     },
     //
