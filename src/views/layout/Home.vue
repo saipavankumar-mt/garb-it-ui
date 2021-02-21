@@ -120,9 +120,7 @@ export default {
   },
   mounted () {
     this.getAllCount()
-    if (this.chartList.length === 0) {
-      this.fillChartData()
-    }
+    this.fillChartData()
   },
   methods: {
     ...mapActions('dashboard', ['getAllCount', 'getChartData']),
