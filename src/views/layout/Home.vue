@@ -23,8 +23,8 @@
         label="Collected"
         :multiple-number="[
         { label: 'today', number: allCounts.record.today },
-        { label: 'last 7 days', number: Math.round(allCounts.record.week / 7) },
-        { label: 'last 30 days', number: Math.round(allCounts.record.month / 30) }
+        { label: 'last 7 days(AVG)', number: Math.round(allCounts.record.week / 7) },
+        { label: 'last 30 days(AVG)', number: Math.round(allCounts.record.month / 30) }
       ]"
       />
     </tiles>
