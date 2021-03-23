@@ -293,7 +293,7 @@ export default {
   },
   watch: {
     adminObj (newValue) {
-      this.adminForm = newValue
+      this.adminForm = _.cloneDeep(newValue)
     }
   },
   mounted () {

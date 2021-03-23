@@ -181,6 +181,7 @@
           :value="clientForm.qrCodeId"
           level="H"
           :size="200"
+          @click-download-qr="downloadQR()"
         />
       </card-component>
     </tiles>
@@ -232,7 +233,7 @@ export default {
   },
   watch: {
     clientObj (newValue) {
-      this.clientForm = newValue
+      this.clientForm = _.cloneDeep(newValue)
     }
   },
   created () {
@@ -244,6 +245,20 @@ export default {
     }
   },
   methods: {
+    downloadQR () {
+      const canvas = document.getElementById('qr-code').children[0]
+      const pngUrl = canvas
+        .toDataURL('image/png')
+        .replace('image/png', 'image/octet-stream')
+      const downloadLink = document.createElement('a')
+      const fileName = `${this.clientObj.id}_${this.clientObj.name}`
+      downloadLink.href = pngUrl
+      downloadLink.download = `${fileName.trim()}.png`
+      document.body.appendChild(downloadLink)
+      downloadLink.click()
+      document.body.removeChild(downloadLink)
+    },
+    //
     submit () {
       if (this.clientId) {
         this.updateClient()

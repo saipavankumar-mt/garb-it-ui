@@ -269,7 +269,7 @@ export default {
   },
   watch: {
     empObj (newValue) {
-      this.employeeForm = newValue
+      this.employeeForm = _.cloneDeep(newValue)
     }
   },
   created () {

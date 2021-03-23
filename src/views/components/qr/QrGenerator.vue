@@ -25,16 +25,7 @@ export default {
   },
   methods: {
     downloadQR () {
-      const canvas = document.getElementById('qr-code').children[0]
-      const pngUrl = canvas
-        .toDataURL('image/png')
-        .replace('image/png', 'image/octet-stream')
-      const downloadLink = document.createElement('a')
-      downloadLink.href = pngUrl
-      downloadLink.download = `${this.value}.png`
-      document.body.appendChild(downloadLink)
-      downloadLink.click()
-      document.body.removeChild(downloadLink)
+      this.$emit('click-download-qr')
     }
   }
 }
